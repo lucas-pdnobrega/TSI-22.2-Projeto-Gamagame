@@ -7,7 +7,7 @@ while len(palavras) != 0:
     print(f's {len(palavras)} {palavras}')    
     print(tentativas)
 
-    #Extrair somente tentativa única
+    # Extrair somente tentativa única
     while True:
         
         tentativa = input('Tentativa : ').lower().strip()
@@ -17,11 +17,12 @@ while len(palavras) != 0:
             break
         print('Tentativa repetida, tente novamente!')
     
-    #Verificar se tentativa é correta
+    # Verificar se tentativa é correta
     if tentativa in palavras:
         for i in range(len(palavras)):
-            if palavras[i-1] == tentativa:
-                palavras.pop(i-1)
+            if palavras[i] == tentativa:
+                palavras.pop(i)
+                break
         print(f'O palpite da palavra {tentativa} de PESSOA estava certo!')
     else:
         print(f'O palpite da palavra {tentativa} de PESSOA estava errado...')
