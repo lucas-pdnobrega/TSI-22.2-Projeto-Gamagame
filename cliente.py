@@ -31,9 +31,8 @@ while True:
         #MÉTODO? Extrair somente tentativa única
         while True:
             print(tentativas)
-            msg = 'RYLP > '
+            msg = f'RYLP \{nome_jogador}\> '
             msg +=  input('RYLP (Ctrl + D para encerrar) > ') # 'Oi Mundo Socket!' -> mensagem de teste
-            print(msg)
 
             tentativa = (msg.split('RYLP > ')[1]).lower().strip()
             

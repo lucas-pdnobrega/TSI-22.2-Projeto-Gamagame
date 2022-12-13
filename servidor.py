@@ -30,7 +30,7 @@ sock.bind(serv)
 sock.listen(4)
 
 palavras = ['batata', 'macaxeira', 'inhame']
-clientes = []
+clientes = {}  # tem que fazer parte do mutex
 
 def processar_cliente(con, cliente):  # con -> socket de conexão; cliente -> IP: PORT do parceiro
     print('Conectado com', cliente)
@@ -43,12 +43,11 @@ def processar_cliente(con, cliente):  # con -> socket de conexão; cliente -> IP
         
         if len(mensagem) > 1:
             tentativa = mensagem[1]
-            mutex.acquire()
             veracidade = False
             
             #if mensagem[1].upper() == 'nome':
                 #con.send(str(f'Seu nome é: {nome_jogador} ').encode())
-                        
+            mutex.acquire()            
             for i in range(len(palavras)):
                 if palavras[i] == tentativa:
                     veracidade = True
@@ -56,9 +55,9 @@ def processar_cliente(con, cliente):  # con -> socket de conexão; cliente -> IP
                     print(palavras)
                     con.send(str(f'O palpite da palavra {tentativa} de PESSOA estava certo!').encode())
                     break
+            mutex.release()
             if not veracidade:
                 con.send(str(f'O palpite da palavra {tentativa} de PESSOA estava errado...').encode())
-            mutex.release()
 
             print(cliente, 'mensagem:', msg.decode())
         else:
