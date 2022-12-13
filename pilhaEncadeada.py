@@ -1,10 +1,12 @@
+from typing import Any
+
 class PilhaException(Exception):
     def __init__(self, msg):
         super().__init__(msg)
 
 
 class No:
-    def __init__(self, conteudo: any):
+    def __init__(self, conteudo: Any):
         self.conteudo = conteudo
         self.prox = None
 
@@ -40,13 +42,13 @@ class Pilha:
     def tamanho(self)->int:
         return self.__tamanho
     
-    def topo(self) -> any:
+    def topo(self) -> Any:
         return self.__head.conteudo
 
     def __len__(self)->int:
         return self.__tamanho
 
-    def existe(self, conteudo:int)->bool:
+    def existe(self, conteudo)->bool:
         #Retorna true se o elemento fornecido está contido na pilha
         atual = self.__head
         while (atual):
@@ -55,7 +57,7 @@ class Pilha:
             atual = atual.prox
         return False
 
-    def elemento(self, conteudo:int)->any:
+    def elemento(self, conteudo:int)->Any:
         #Retorna a carga armazenada no nó na posição N
         atual = self.__head
         while (atual):
@@ -64,7 +66,7 @@ class Pilha:
             atual = atual.prox
         return False
     
-    def busca(self, conteudo:any)->int:
+    def busca(self, conteudo:Any)->int:
         #Retorna a posição do nó cuja conteúdo corresponde à consulta
         cont = 0
         atual = self.__head
@@ -75,7 +77,7 @@ class Pilha:
             cont += 1
         raise  PilhaException(f'Valor {conteudo} não está na pilha')
 
-    def modificar(self, posicao:int, conteudo: any):
+    def modificar(self, posicao:int, conteudo: Any):
         #Substitui o conteúdo do elemento na posição N
         try:
             assert posicao > 0 and posicao <= self.__tamanho
@@ -89,14 +91,14 @@ class Pilha:
         except AssertionError:
             raise PilhaException(f'Posicao inválida para a pilha atual com {self.__tamanho} elementos')
 
-    def empilha(self, conteudo:any):
+    def empilha(self, conteudo:Any):
         #Empilha um novo nó "newno"
         newno = No(conteudo)
         newno.prox = self.__head
         self.__head = newno
         self.__tamanho += 1
 
-    def desempilha(self) -> any:
+    def desempilha(self) -> Any:
         #Desempilha o nó head atual
         if self.estaVazia():
             raise PilhaException(f'Pilha vazia.')
@@ -114,7 +116,7 @@ class Pilha:
         except AssertionError:
             return False
 
-    def obtemBase(self) -> any:
+    def obtemBase(self) -> Any:
         cursor = self.__head
         while cursor.prox != None:
             cursor = cursor.prox
