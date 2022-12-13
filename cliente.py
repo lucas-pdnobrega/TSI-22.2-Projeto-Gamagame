@@ -7,8 +7,8 @@ import sys
 HOST = '127.0.0.1'
 PORT = 5000
 
-if len(sys.argv) > 1:
-    HOST = sys.argv[1]
+# if len(sys.argv) > 1:  # se passarmos um IP como argumento (exemplo: ./cliente.py 200.129.2.1)
+#     HOST = sys.argv[1]
 
 nome_jogador = input('Insira o seu nome de usuário : ')
 
@@ -21,7 +21,7 @@ retorno = sock.recv(1024)
 
 if retorno:
     retorno = retorno.decode()
-    print(f"Recebi {retorno} do servidor")
+    print(f"{retorno} entrou no servidor")
 else:
     print("Não há partidas")
 
@@ -56,14 +56,6 @@ sock.close()
 #         print('Tentativa repetida, tente novamente!')
     
 #     # Verificar se tentativa é correta
-#     if tentativa in palavras:
-#         for i in range(len(palavras)):
-#             if palavras[i] == tentativa:
-#                 palavras.pop(i)
-#                 break
-#         print(f'O palpite da palavra {tentativa} de PESSOA estava certo!')
-#     else:
-#         print(f'O palpite da palavra {tentativa} de PESSOA estava errado...')
 #     tentativas.empilha(tentativa)
 
 # print('FIM DO PROGRAMA')

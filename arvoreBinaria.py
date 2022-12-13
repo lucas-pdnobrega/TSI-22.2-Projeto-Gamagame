@@ -138,8 +138,6 @@ class ArvoreBinaria:
             if self.__cursor.dir.esq == None and \
                self.__cursor.dir.dir == None:
                 self.__cursor.dir = None
-
-
         
     def go(self, chave:int )->No:
         return self.__go(chave,self.__raiz)

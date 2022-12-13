@@ -19,7 +19,10 @@ partida = ArvoreBinaria()
 # ver respostas
 # sair
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#temas = arvoreBinaria()
+#
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 serv = (HOST, PORT)
 sock.bind(serv)
 sock.listen(16)
@@ -33,7 +36,11 @@ def processar_cliente(con, cliente):  # con -> socket de conexão; cliente -> IP
     while True:
         msg = con.recv(TAM_MSG)
         if not msg: break
-        print(cliente, 'mensagem:', msg.decode())
+        if len(msg.decode().split('RYLP >')) > 1:
+            print(cliente, 'mensagem:', msg.decode())
+        else:
+            clientes.append(msg.decode())
+            print(clientes)
         con.send(msg)
     print('Desconectando do cliente', cliente)
     con.close()
@@ -42,6 +49,20 @@ def processar_cliente(con, cliente):  # con -> socket de conexão; cliente -> IP
 while True:
     try:
         con, cliente = sock.accept()  # con -> socket retornado pelo accept
-    except: break
+    except EOFError: break
     threading.Thread(target=processar_cliente, args=(con, cliente,)).start()
 sock.close()
+
+#     #SEMÀFOROOOOO
+#     mutex = threading.Semaphore(1)
+
+#     mutex.acquire()
+#     if msg.decode() in palavras:
+#         for i in range(len(palavras)):
+#             if palavras[i] == msg:
+#                 palavras.pop(i)
+#                 break
+#         con.send(str(f'O palpite da palavra {tentativa} de PESSOA estava certo!').encode())
+#     else:
+#         con.send(str(f'O palpite da palavra {tentativa} de PESSOA estava errado...').encode())
+#     mutex.release()
