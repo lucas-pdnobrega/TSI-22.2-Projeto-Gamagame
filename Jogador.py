@@ -6,6 +6,7 @@ class Jogador():
     def __init__(self, nome: str, pontuacao: int) -> None:
         self.__nome = nome
         self.__pontuacao = pontuacao
+        # número de acertos por usuário
         self.__tentativas = Pilha()
     
     def pontuar(self) -> None:

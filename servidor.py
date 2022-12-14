@@ -30,12 +30,15 @@ sock.bind(serv)
 sock.listen(4)
 
 palavras = ['batata', 'macaxeira', 'inhame']
-clientes = {}  # tem que fazer parte do mutex
+clientes = {
+	# user: socket -> usar aquele socket con (aquele que volta do accept)
+}  # tem que fazer parte do mutex
+# percorrer a lista de clientes e informar a cada um quem ganhou
 
 def processar_cliente(con, cliente):  # con -> socket de conexão; cliente -> IP: PORT do parceiro
     print('Conectado com', cliente)
     # O RESTO
-    while True:
+    while True:  # while partida esta rolando
         msg = con.recv(TAM_MSG)
         if not msg: break
 
@@ -51,9 +54,12 @@ def processar_cliente(con, cliente):  # con -> socket de conexão; cliente -> IP
             for i in range(len(palavras)):
                 if palavras[i] == tentativa:
                     veracidade = True
-                    palavras.pop(i)
+                    palavras.pop(i)  # verificar se há palavras depois do pop
+					# notificar todos os jogadores do fim do jogo -> 1. identificar o ganhador (maior potuação)
+					# except
                     print(palavras)
-                    con.send(str(f'O palpite da palavra {tentativa} de PESSOA estava certo!').encode())
+                    con.send(str(f'O palpite da palavra {tentativa} de PESSOA estava certo!').encode())  # NÃO MANDAR ESSAS STRINGS
+					# SERVIDOR SIMPLIFICADO -> mandar um 'OK' ou algo do tipo
                     break
             mutex.release()
             if not veracidade:
@@ -67,16 +73,32 @@ def processar_cliente(con, cliente):  # con -> socket de conexão; cliente -> IP
     print('Desconectando do cliente', cliente)
     con.close()
 
+# mandar a msg fim de jogo e fechar o socket para cada conexão
 
-while len(palavras) > 0: #checagem apenas no login do cliente
+while len(palavras) > 0: # checagem apenas no login do cliente
     try:
         con, cliente = sock.accept()  # con -> socket retornado pelo accept
     except: break
     threading.Thread(target=processar_cliente, args=(con, cliente,)).start()
+
 #up do semáforo - mutex?
 # semáforo que, quando estiver up, matará todas as outras threads
 sock.close()
+
+
+
 print('FIM DO PROGRAMA')
+
+
+
+
+
+
+
+
+
+
+
 
 '''
 #!/usr/bin/env python3
