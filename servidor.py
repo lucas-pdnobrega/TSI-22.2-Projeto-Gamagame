@@ -67,8 +67,10 @@ def processar_cliente(con, cliente):  # con -> socket de conexão; cliente -> IP
 
             print(cliente, 'mensagem:', msg.decode())
         else:
-            clientes.append(msg.decode())
-            print(clientes)
+			mutex.acquire()
+			clientes.append(msg.decode())
+			print(clientes)
+			mutex.release()
             con.send(msg)
     print('Desconectando do cliente', cliente)
     con.close()
@@ -84,7 +86,6 @@ while len(palavras) > 0: # checagem apenas no login do cliente
 #up do semáforo - mutex?
 # semáforo que, quando estiver up, matará todas as outras threads
 sock.close()
-
 
 
 print('FIM DO PROGRAMA')

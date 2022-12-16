@@ -1,0 +1,6 @@
+Estruturas do nosso projeto
+
+1 - Objeto jogador
+2 - Árvore binária de temas (uma espécie de sistema de arquivos)
+3 - Pilha de tentativs de cada jogador
+4 - Listas de temas

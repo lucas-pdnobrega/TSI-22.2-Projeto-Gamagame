@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from pilhaEncadeada import Pilha
+from Jogador import *
 import socket
 import sys
 
@@ -11,6 +12,8 @@ PORT = 5000
 #     HOST = sys.argv[1]
 
 tentativas = Pilha()
+
+# Criar um jogador
 nome_jogador = input('Insira o seu nome de usuário : ')
 
 servidor = (HOST, PORT)

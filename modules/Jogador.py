@@ -1,11 +1,15 @@
 # para cada thread, criar um objeto jogador
-from pilhaEncadeada import Pilha
+from structures.pilhaEncadeada import Pilha
+
+class GamaException(Exception):
+    def __init__(self, msg) -> None:
+        super().__init__(msg)
 
 class Jogador():
 
-    def __init__(self, nome: str, pontuacao: int) -> None:
+    def __init__(self, nome: str) -> None:
         self.__nome = nome
-        self.__pontuacao = pontuacao
+        self.__pontuacao = 0
         # número de acertos por usuário
         self.__tentativas = Pilha()
     
@@ -24,3 +28,5 @@ class Jogador():
     def tentativas(self) -> 'Pilha':
         return self.__tentativas
         
+    def __str__(self):
+        return f"Nome: {self.__nome}\nPontuação: {self.__pontuacao}\nTentativas: {self.__tentativas}"
