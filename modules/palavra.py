@@ -5,7 +5,7 @@ class GamaException(Exception):
 class Palavra:
     def __init__(self, peso:int, valor:str):
         try:
-            assert peso > 0, valor != ''
+            assert peso > 0 and valor != ''
             self.__peso = peso
             self.__valor = valor
         except AssertionError:

@@ -1,5 +1,6 @@
 from structures.arvoreAVL import AVLTree
 from modules.palavra import Palavra
+import random
 
 class GamaException(Exception):
     def __init__(self, msg) -> None:
@@ -8,9 +9,9 @@ class GamaException(Exception):
 class Tema:
     def __init__(self, nome:str, teto:int, palavras:list[Palavra]):
         try:
+            assert nome != '' and len(palavras) > 0  and teto <= len(palavras) - 1
             self.__nome = nome
-            self.__avlPalavras = AVLTree()
-            assert nome != '', teto <= len(palavras)-1
+            self.__avlPalavras = AVLTree()    
             self.__tetoSorteio = teto
             self.__preencherPalavras(palavras)
         except AssertionError:
@@ -44,7 +45,7 @@ class Tema:
             temp.append(str(i))
         return temp
 
-    def __sortearPalavras(self) -> list:
+    def sortearPalavras(self) -> list:
         palavras = self.__avlPalavras.getNodes()
-        palavras.shuffle()
+        random.shuffle(palavras)
         return palavras[:self.__tetoSorteio]
