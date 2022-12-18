@@ -15,22 +15,22 @@ class Palavra:
         return f'{self.__valor} : {self.__peso}'
 
     def __lt__(self, other) -> bool:
-        return True if self.__peso < other.__peso else False
+        return self.__peso < other.__peso 
 
     def __le__(self, other) -> bool:
-        return True if self.__peso <= other.__peso else False
+        return self.__peso <= other.__peso 
 
     def __eq__(self, other) -> bool:
-        return True if self.__peso == other.__peso else False
+        return self.__peso == other.__peso 
 
     def __ne__(self, other) -> bool:
-        return True if self.__peso != other.__peso else False
+        return self.__peso != other.__peso 
 
     def __gt__(self, other) -> bool:
-        return True if self.__peso > other.__peso else False
+        return self.__peso > other.__peso 
 
     def __ge__(self, other) -> bool:
-        return True if self.__peso >= other.__peso else False
+        return self.__peso >= other.__peso 
 
     @property
     def peso(self) -> int:

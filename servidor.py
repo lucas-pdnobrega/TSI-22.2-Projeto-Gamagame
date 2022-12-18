@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
-
-from arvoreBinaria import ArvoreBinaria
 import socket
 import threading
-
 
 TAM_MSG = 1024
 HOST = '0.0.0.0'
 PORT = 5000
 
-partida = ArvoreBinaria()
+temas = []
 mutex = threading.Semaphore(1)
 
 ################################
@@ -22,7 +19,6 @@ mutex = threading.Semaphore(1)
 # sair
 
 #temas = arvoreBinaria()
-#
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serv = (HOST, PORT)
@@ -31,7 +27,7 @@ sock.listen(4)
 
 palavras = ['batata', 'macaxeira', 'inhame']
 clientes = {
-	# user: socket -> usar aquele socket con (aquele que volta do accept)
+	# Jogador(): socket -> usar aquele socket con (aquele que volta do accept)
 }  # tem que fazer parte do mutex
 # percorrer a lista de clientes e informar a cada um quem ganhou
 
