@@ -276,7 +276,6 @@ class AVLTree(object):
         if(self.__root is not None):
             self.__root = self.__getNodes(self.__root, nodes)
         return nodes
-        
 
     def __getNodes(self, root:Node, nodes:list)->Node: 
         if not root:

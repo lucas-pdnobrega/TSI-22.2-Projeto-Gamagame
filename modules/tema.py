@@ -9,33 +9,25 @@ class GamaException(Exception):
 class Tema:
     def __init__(self, nome:str, palavras:list[Palavra]):
         try:
-            assert nome != '' and len(palavras) > 0  #and teto <= len(palavras)
+            assert nome != '' and len(palavras) > 0
             self.__nome = nome
             self.__avlPalavras = AVLTree()
-            #self.__tetoSorteio = teto  # pode ser passado no sorteio em si
             self.__preencherPalavras(palavras)
         except AssertionError:
-            raise GamaException('Entradas (nome, teto e/ou palavras) inválidas!')
-
+            raise GamaException('Entradas (nome, e/ou palavras) inválidas!')
 
     def __str__(self):
         return f'{self.__nome} : {self.__strPalavras()}'
 
-    # @property
-    # def tetoSorteio(self) -> int:
-    #     '''Retorna o número de palavras a serem sorteadas'''
-    #     return self.__tetoSorteio
+    @property
+    def nome(self) -> str:
+        '''Retorna o nome da árvore de temas'''
+        return self.__nome
 
     @property
     def avlPalavras(self) -> list[Palavra]:
         '''Retorna a lista de palavras que está na árvore'''
         return self.__avlPalavras.getNodes()
-
-    # @tetoSorteio.setter
-    # def tetoSorteio(self, teto:int) -> int:
-    #     '''Altera o número de palavras a serem sorteadas'''
-    #     self.__tetoSorteio = teto
-    #     return self.__tetoSorteio
 
     def __preencherPalavras(self, palavras:list[Palavra]):
         '''Insere novas palavras na lista de palavras'''
@@ -49,6 +41,13 @@ class Tema:
         for i in palavras:
             temp.append(str(i))
         return temp
+
+    def addPalavra(self, peso:int, valor:str):
+        try:
+            assert peso > 0 and valor != '' and str(Palavra(peso, valor)) not in (self.__strPalavras())
+            self.__avlPalavras.insert(Palavra(peso, valor))
+        except AssertionError:
+            raise GamaException('Entradas (peso e/ou valor) inválidas!')
 
     def sortearPalavras(self, teto:int) -> list:
         try:

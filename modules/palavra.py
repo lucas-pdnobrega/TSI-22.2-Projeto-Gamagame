@@ -42,8 +42,16 @@ class Palavra:
 
     @peso.setter
     def peso(self, peso:int) -> int:
-        return self.__peso
+        try:
+            assert peso > 0
+            self.__peso = peso
+        except AssertionError:
+            raise GamaException('Entradas (peso) inválidas!')
 
     @valor.setter
     def valor(self, valor:int) -> int:
-        return self.__valor
+        try:
+            assert valor != ''
+            self.__valor = valor
+        except AssertionError:
+            raise GamaException('Entradas (valor) inválidas!')

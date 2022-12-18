@@ -8,6 +8,8 @@ p = tema.avlPalavras
 for i in p:
     print(i)
 
+tema.addPalavra(3, 'Omnitrix')
+
 sorteadas1 = tema.sortearPalavras(3)
 for i in sorteadas1:
     print(i, end='; ')
