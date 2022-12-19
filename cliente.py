@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from pilhaEncadeada import Pilha
-from Jogador import *
+from structures.pilhaEncadeada import Pilha
+from modules.jogador import Jogador
 import socket
 import sys
 

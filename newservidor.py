@@ -17,9 +17,12 @@ def broadCast(msg, atributos, clientes):
         # cli.send(str.encode('+JANO {}\n'.format(clientes[con])))
 
 def processa_msg_cliente(msg, con, cliente):
+
+    global clientes
+    global mutex
+
     msg = msg.decode()
     print('Cliente', cliente, 'enviou', msg)
-    
     msg = msg.split()
     
     if msg[0].upper() == 'JOIN':
@@ -30,16 +33,18 @@ def processa_msg_cliente(msg, con, cliente):
             try:
                 clientes[con] = nome_cli
                 con.send(str.encode('+OK {}\n'.format(clientes[con])))
+                for cli in clientes:
+                    print(cli)
+                    cli.send(str.encode('+JANO {}\n'.format(clientes[con])))
             except Exception as e:
                 con.send(str.encode('-ERR {}\n'.format(e)))
         else:
             con.send(str.encode('-ERR 40\n'))
-        #for cli in clientes:
-            con.send(str.encode('+JANO\n'))
-            print('TENTEI ENVIAR O KRL DO JANO')
-            # cli.send(str.encode('+JANO {}\n'.format(clientes[con])))
         mutex.release()
     
+    elif msg[0].upper() == 'HEY':
+        con.send(str.encode('+HEY\n'))
+
     elif msg[0].upper() == 'LIST':
         lista_arq = os.listdir('.')
         con.send(str.encode('+OK {}\n'.format(len(lista_arq))))
@@ -79,18 +84,21 @@ def processa_cliente(con, cliente):
         msg = con.recv(TAM_MSG)
         if not msg or not processa_msg_cliente(msg, con, cliente): break
     con.close()
+    mutex.acquire()
+    clientes.pop(con)
+    mutex.release()
     print('Cliente desconectado', cliente)
     
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serv = (HOST, PORT)
 sock.bind(serv)
-sock.listen(50)
+sock.listen(10)
 while True:
     try:
         con, cliente = sock.accept()
+        threading.Thread(target=processa_cliente, args=(con, cliente,)).start()
     except: break
     #processa_cliente(con, cliente)
-    threading.Thread(target=processa_cliente, args=(con, cliente,)).start()
 sock.close()
 
 # while True: # checagem apenas no login do cliente
