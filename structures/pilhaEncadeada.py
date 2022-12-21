@@ -48,15 +48,6 @@ class Pilha:
     def __len__(self)->int:
         return self.__tamanho
 
-    def existe(self, conteudo)->bool:
-        #Retorna true se o elemento fornecido está contido na pilha
-        atual = self.__head
-        while (atual):
-            if atual.conteudo == conteudo:
-                return True
-            atual = atual.prox
-        return False
-
     def elemento(self, conteudo:int)->Any:
         #Retorna a carga armazenada no nó na posição N
         atual = self.__head
@@ -185,3 +176,15 @@ class Pilha:
             out.empilha(t.desempilha())
             
         return out
+
+    def existe(self, conteudo)->bool:
+        """
+        --MÉTODO ADICIONAL DA EQUIPE--
+        Método retorna True/False sobre a existência de uma chave na pilha encadeada
+        """
+        atual = self.__head
+        while (atual):
+            if atual.conteudo == conteudo:
+                return True
+            atual = atual.prox
+        return False

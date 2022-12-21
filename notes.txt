@@ -28,6 +28,7 @@ Estruturas do nosso projeto
 ## Documentacao
 
 -> Entrar na partida - classe 1
+
 GJOIN username
     +GYES 10 [JOINED]\n\r
     -GNO 11 [Exception]\n\r
@@ -51,7 +52,7 @@ GTRIES
 -> Listar a pontuacao - classe 5
 GSCORE
     +GYES 50 [PONTUACAO]\n\r
-    -GNO 51 [Exception]\n\
+    -GNO 51 [Exception]\n\r
 
 -> Listar as respostas corretas - classe 6
 GANS

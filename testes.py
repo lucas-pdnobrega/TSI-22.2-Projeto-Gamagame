@@ -12,17 +12,16 @@ Palavra(5, 'Torta'),
 Palavra(4, 'Bolo'), 
 Palavra(6, 'Paçoca'),
 Palavra(10, 'Brusqueta'),
-Palavra(7, 'Dadinhos de Tapioca'), 
+Palavra(7, 'Tapioca'), 
 Palavra(2, 'Salada'),
 Palavra(2, 'Farofa'),
 Palavra(1, 'Salpicão'),
 Palavra(1, 'Arroz'),
 Palavra(3, 'Peru'), 
 Palavra(3, 'Frango'), 
-Palavra(6, 'Pavê de sonho de valsa')]
+Palavra(6, 'Pavê')]
 
 paises_da_copa_2022 = [Palavra(3,'Alemanha'),
-Palavra(12,'Arábia Saudita'),
 Palavra(1,'Argentina'),
 Palavra(8,'Austrália'),
 Palavra(4,'Bélgica'),
@@ -30,13 +29,11 @@ Palavra(1,'Brasil'),
 Palavra(11,'Camarões'),
 Palavra(10,'Canadá'),
 Palavra(8,'Catar'),
-Palavra(11,'Coreia do Sul'),
-Palavra(9,'Costa Rica'),
+Palavra(11,'Coreia'),
 Palavra(4,'Croácia'),
 Palavra(6,'Dinamarca'),
 Palavra(6,'Equador'),
 Palavra(2,'Espanha'),
-Palavra(10,'Estados Unidos'),
 Palavra(3,'França'),
 Palavra(7,'Gana'),
 Palavra(3,'Holanda'),
@@ -45,7 +42,7 @@ Palavra(8,'Irã'),
 Palavra(8,'Japão'),
 Palavra(9,'Marrocos'),
 Palavra(9,'México'),
-Palavra(10,'País de Gales'),
+Palavra(10,'Gales'),
 Palavra(4,'Polônia'),
 Palavra(7,'Portugal'),
 Palavra(5,'Senegal'),
@@ -77,10 +74,16 @@ comidas.addPalavra(3, 'Omelete')
 s = Server([comidas, paises])
 
 s.sortearTema()
-print(f'[{s.escolhido}]{s.nomeatual}')
-for i in s.atual:
+print(f'[{s.escolhido}]{s.temaAtual}')
+for i in s.respostas:
     print(i, end="; ")
 print()
-while len(s.atual) > 0:
-    print(f'Faltam {len(s.atual)}!')
+while len(s.respostas) > 0:
+    print(f'Faltam {len(s.respostas)}!')
     print(s.verifyPalpite(input()))
+# print('PREORDEM')
+# paises.preOrdem()
+# print('INORDEM')
+# paises.inOrdem()
+# print('POSORDEM')
+# paises.posOrdem()

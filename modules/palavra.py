@@ -1,8 +1,14 @@
 class GamaException(Exception):
+    #Tratamento de erro#
     def __init__(self, msg) -> None:
         super().__init__(msg)
 
 class Palavra:
+    '''
+    Classe que armazena as informações sobre uma palavra. Tais informções são:
+    peso e termo. O peso é a dificuldade da palavra e o termo é a string em si.
+    '''
+    #Classe palavra é estruturada como tupla, [0] é seu peso e [1] é termo, este termo é a string da palavra propriamente dita
     def __init__(self, peso:int, termo:str):
         try:
             assert peso > 0 and termo != ''

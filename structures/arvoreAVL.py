@@ -183,7 +183,8 @@ class AVLTree(object):
   
         print("{0} ".format(root.value), end="") 
         self.__preOrder(root.left) 
-        self.__preOrder(root.right) 
+        self.__preOrder(root.right)
+        return root
 
     def delete(self, key:object):
         if(self.__root is not None):
@@ -270,8 +271,11 @@ class AVLTree(object):
  
         return self.getMinValueNode(root.left)
 
-    #MÉTODO PARA RETORNAR UMA LISTA DE TODOS OS NÓS
     def getNodes(self)->list:
+        """
+        --MÉTODO ADICIONAL DA EQUIPE--
+        Método que obtem todas as cargas dos nós armazenados na árvore AVL em uma lista
+        """
         nodes = []
         if(self.__root is not None):
             self.__root = self.__getNodes(self.__root, nodes)
