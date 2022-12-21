@@ -3,8 +3,16 @@
 # Projeto-Gamagame
 
 ## &nbsp; Implementação cliente-servidor em Python do jogo Gamagame
-    A aplicação Gamagame é um jogo baseado em um chat onde haverá uma lista dividido em categorias (temas). Para cada categoria haverá 3 itens (palavras) sorteados e, no início do jogo, o chat será informado qual a categoria foi sorteada e os participantes do chat tentarão acertar os itens sorteados.
-    Clientes mandam suas respostas (tentativas) para o servidor e este administra a partida. Quando a resposta (tentativa) informada pelo usuário for uma das que foram sorteadas, aquele participante que respondeu corretamente ganhará 10 pontos.
+
+    A aplicação Gamagame é um jogo baseado em um chat onde haverá uma
+    lista dividido em categorias (temas). Para cada categoria haverá 
+    3 itens (palavras) sorteados e, no início do jogo, o chat será 
+    informado qual a categoria foi sorteada e os participantes do chat
+    tentarão acertar os itens sorteados. Clientes mandam suas respostas
+    (tentativas) para o servidor e este administra a partida. Quando a 
+    resposta (tentativa) informada pelo usuário for uma das que foram 
+    sorteadas, aquele participante que respondeu corretamente ganhará 
+    10 pontos.
 
 
 ## &nbsp; Integrantes
@@ -18,7 +26,6 @@
   - Pilha Encadeada na classe Jogador
 
 
-## &nbsp; Protocolo de Aplicação : RYLP (Renato Yago Lucas Protocol)
 ## &nbsp; Requisições do Protocolo de Aplicação RYLP
   - JOIN : Requisição de Cliente para entrar numa partida do Servidor.
   - CHUTE : Requisição de Cliente para encaminhar um palpite de palavra ao Servidor.
