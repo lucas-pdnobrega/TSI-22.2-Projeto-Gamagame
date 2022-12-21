@@ -2,7 +2,7 @@
 from modules.palavra import Palavra
 from modules.tema import Tema
 from modules.servidor import Server
-from modules.jogador import Jogador
+from modules.Jogador import Jogador
 import socket
 import threading
 
