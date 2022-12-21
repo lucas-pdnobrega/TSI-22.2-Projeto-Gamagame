@@ -35,9 +35,6 @@ def processa_servidor():
 
     while True:
 
-        if encerramento:
-            break
-
         dados = sock.recv(TAM_MSG)
         if not dados: break
         msg_status = dados.decode().split('\n')[0]
@@ -57,6 +54,7 @@ def processa_servidor():
         elif args[0] == '+WIN':
             print(f'Partida concluída! {args[1]} ganhou com {args[2]} pontos!\n')
             encerramento = True
+            break
 
         elif args[0] == '+ANO':
             print(f'O tema sorteado da vez é {args[1]}!\n')
@@ -64,6 +62,7 @@ def processa_servidor():
         elif args[0] == '-END':
             print('Partida cancelada por problemas de conexão.\n')
             encerramento = True
+            break
 
         elif args[0] == '-ERR_40':
             print(f'Erro 40 - Usuário não participante da partida\n')
@@ -79,6 +78,11 @@ def processa_servidor():
 
         elif args[0] == '-ERR_44':
             print(f'Erro 44 - Partida não iniciada\n')
+
+        elif args[0] == '-ERR_45':
+            print(f'Erro 45 - Comando inválido\n')
+        else:
+            print(f'Erro desconhecido - {args[1]}\n')
 
 
 print('Servidor:', HOST+':'+str(PORT))

@@ -2,7 +2,7 @@
 from modules.palavra import Palavra
 from modules.tema import Tema
 from modules.servidor import Server
-from modules.Jogador import Jogador
+from modules.jogador import Jogador
 import socket
 import threading
 
@@ -92,7 +92,7 @@ sock.bind(serv)
 sock.listen(10)
 
 
-def broadcast(msg:str, dados:str = '', adendo:any = None):
+def broadcast(msg:str, dados:str = '', adendo:any = ''):
     '''Função para realização do broadcast para todos os jogadores registrados na partida atual'''
     global clientes
 
@@ -112,9 +112,8 @@ def listener():
     global encerramento
     global vitoria
 
-    mutex.acquire()
-
     while True:
+        mutex.acquire()
         if len(clientes) > 1 and inicio == False:
             # INICIALIZAR O SORTEIO DO TEMA
             inicio = True
@@ -147,7 +146,6 @@ def listener():
 
             broadcast('+WIN', vencedor, maximo)
             restart()
-
         mutex.release()
 
 def restart():
@@ -200,23 +198,24 @@ def processa_msg_cliente(msg, con, cliente):
         if con in clientes:
             try:
                 chute = "".join(msg[1:])
+                if len(chute) > 0:
+                    clientes[con].addTentativa(chute)
+                    print(f'<{clientes[con]}>: {chute}')
 
-                clientes[con].addTentativa(chute)
-                print(f'<{clientes[con]}>: {chute}')
+                    #Função varrer as respostas pelo peso correspondente   
+                    peso = 0
+                    for res in s.respostas:
+                        if chute.lower() == res.termo.lower():
+                            peso = res.peso
 
-                #Função varrer as respostas pelo peso correspondente   
-                peso = 0
-                for res in s.respostas:
-                    if chute.lower() == res.termo.lower():
-                        peso = res.peso
-
-                if s.verifyPalpite(chute):
-                    clientes[con].pontuar(peso)
-                    con.send(str.encode('+CORRECT\n')) #Palpite Correto
+                    if s.verifyPalpite(chute):
+                        clientes[con].pontuar(peso)
+                        con.send(str.encode('+CORRECT\n')) #Palpite Correto
+                    else:
+                        con.send(str.encode('+INCORRECT\n')) #Palpite Incorreto
+                    print(f'Respostas : {respostas}')
                 else:
-                    con.send(str.encode('+INCORRECT\n')) #Palpite Incorreto
-                print(f'Respostas : {respostas}')
-                
+                    con.send(str.encode('-ERR_43\n')) #Entrada Inválida
             except:
                 pass
         else:
@@ -230,7 +229,7 @@ def processa_msg_cliente(msg, con, cliente):
         mutex.release()
         return False
     else:
-        con.send(str.encode('-ERR Comando_inválido\n'))
+        con.send(str.encode('-ERR_45\n'))
     return True
         
 def processa_cliente(con, cliente):
