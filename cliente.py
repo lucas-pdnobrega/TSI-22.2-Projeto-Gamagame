@@ -15,7 +15,6 @@ def decode_cmd_usr(cmd_usr):
         'join': 'join',
         'chute' : 'chut',
         'quit' : 'quit',
-        'exit': 'quit'
     }
     tokens = cmd_usr.split()
     if tokens[0].lower() in cmd_map:
@@ -98,7 +97,7 @@ while True:
     try:
         cmd_usr = input()
     except:
-        cmd_usr = 'EXIT'
+        cmd_usr = 'QUIT'
     cmd = decode_cmd_usr(cmd_usr)
     if not cmd:
         print('Comando indefinido:', cmd_usr)
@@ -108,6 +107,7 @@ while True:
         cmd[0] = cmd[0].upper()
 
         if cmd[0] == 'QUIT':
+            encerramento = True
             break
 
 sock.close()

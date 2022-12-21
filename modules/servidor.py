@@ -67,5 +67,3 @@ class Server():
             return False
         except AssertionError:
             raise GamaException('Palpite inválido!')
-
-    

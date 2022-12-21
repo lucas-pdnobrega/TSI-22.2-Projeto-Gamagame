@@ -6,6 +6,10 @@ from modules.jogador import Jogador
 import socket
 import threading
 
+'''
+Definição de recursos para alimentação da aplicação
+'''
+#Lista de objetos Palavra 'comidas'
 comidas = [Palavra(10, 'Samgyetang'),
 Palavra(4, 'Macarronada'), 
 Palavra(3, 'Feijoada'),
@@ -24,7 +28,7 @@ Palavra(1, 'Arroz'),
 Palavra(3, 'Peru'), 
 Palavra(3, 'Frango'), 
 Palavra(6, 'Pavê')]
-
+#Lista de objetos Palavra 'paises_da_copa_2022'
 paises_da_copa_2022 = [Palavra(3,'Alemanha'),
 Palavra(1,'Argentina'),
 Palavra(8,'Austrália'),
@@ -55,28 +59,32 @@ Palavra(6,'Suíça'),
 Palavra(6,'Tunísia'),
 Palavra(7,'Uruguai')]
 
+#Inserção das listas de palavras nos seus temas correspondentes
 comidas = Tema('Comidas', comidas)
 paises = Tema('Paises da Copa 2022', paises_da_copa_2022)
-s = Server([comidas, paises])
+s = Server([comidas, paises]) # Classe responsável por administrar os dados do servidor
 
-mutex = threading.Semaphore(1)
+mutex = threading.Semaphore(1) #Semáforo para exclusão mútua
 clientes = {} #Dicionário de clientes : socket
-gabarito = []
+respostas = [] #Lista de respostas em formato string ao invés de OBJ(Palavras)
 inicio = False #Flag de início de uma partida
 encerramento = False #Flag de encerramento (Partida cancelada, etc.)
 vitoria = False #Flag de vitória
-
 TAM_MSG = 1024 # Tamanho do bloco de mensagem
 HOST = '0.0.0.0' # IP do Servidor
 PORT = 40000 # Porta que o Servidor escuta
 
+'''
+Inicialização da porta do servidor
+''' 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serv = (HOST, PORT)
 sock.bind(serv)
 sock.listen(10)
 
+
 def broadcast(msg:str, dados:str = ''):
-    
+    '''Função para realização do broadcast para todos os jogadores registrados na partida atual'''
     global clientes
 
     mensagem = f'{msg} {dados}\n'.strip()
@@ -86,11 +94,11 @@ def broadcast(msg:str, dados:str = ''):
         cli.send(str.encode(mensagem))
 
 def listener():
-
+    '''Função thread para averiguação do estado atual do servidor e da partida'''
     global mutex
     global s
     global clientes
-    global gabarito
+    global respostas
     global inicio
     global encerramento
     global vitoria
@@ -99,24 +107,30 @@ def listener():
 
     while True:
         if len(clientes) > 1 and inicio == False:
-            # COMEÇAR SORTEIO
+            # INICIALIZAR O SORTEIO DO TEMA
             inicio = True
             s.sortearTema()
-            for i in s.respostas:
-                gabarito.append(str(i))
-            print(f'[{s.escolhido}]{s.temaAtual}')
+            #Definição de lista de respostas em formato str ao invés de OBJ
+            res = s.respostas
+            for r in res:
+                respostas.append(str(r))
+            print(f'Tema Atual : {s.temaAtual}')
             broadcast('+ANO', s.temaAtual)
 
         elif inicio == True and len(clientes) <= 1:
-            # COMEÇAR ENCERRAMENTO
+            # INICIAR BROADCAST DE ENCERRAMENTO
+
             broadcast('-END')
             restart()
 
         elif inicio == True and len(s.respostas) == 0:
-            # COMEÇAR VITÓRIA
+            # INICIAR BROADCAST DE VITÓRIA
+
             vitoria = True
             vencedor = ''
             maximo = 0
+
+            #PESQUISA LINEAR PELO VENCEDOR
             for cli in clientes:
                 if clientes[cli].pontuacao > maximo:
                     maximo = clientes[cli].pontuacao
@@ -128,7 +142,7 @@ def listener():
         mutex.release()
 
 def restart():
-
+    '''Função para reinicializar todos as propriedades globais do servidor'''
     global clientes
     global gabarito
     global inicio
@@ -159,17 +173,17 @@ def processa_msg_cliente(msg, con, cliente):
                 mutex.acquire()
                 if con not in clientes and nome_cli not in clientes.values():
                     try:
-                        clientes[con] = Jogador(nome_cli)
+                        clientes[con] = Jogador(nome_cli) #Inserção da socket atual como chave e valor correspondente objeto Jogador
                         con.send(str.encode('+ACK {}\n'.format(clientes[con].nome)))
                     except Exception as e:
                         con.send(str.encode('-ERR {}\n'.format(e)))
                 else:
-                    con.send(str.encode('-ERR_41\n'))
+                    con.send(str.encode('-ERR_41\n')) #Usuário já participa da partida
                 mutex.release()
             else:
-                con.send(str.encode('-ERR_43\n'))
+                con.send(str.encode('-ERR_43\n')) #Entrada Inválida
         else:
-            con.send(str.encode('-ERR_42\n'))
+            con.send(str.encode('-ERR_42\n')) #Partida em Andamento
 
     elif msg[0].upper() == 'CHUT':
         
@@ -177,26 +191,22 @@ def processa_msg_cliente(msg, con, cliente):
         if con in clientes:
             try:
                 chute = "".join(msg[1:])
+
                 clientes[con].addTentativa(chute)
                 print(f'<{clientes[con]}>: {chute}')
+
                 if s.verifyPalpite(chute):
                     clientes[con].pontuar()
-                    con.send(str.encode('+CORRECT\n'))
+                    con.send(str.encode('+CORRECT\n')) #Palpite Correto
                 else:
-                    con.send(str.encode('+INCORRECT\n'))
-                print(f'Respostas : {s.termoRespostas()}')
+                    con.send(str.encode('+INCORRECT\n')) #Palpite Incorreto
+                print(f'Respostas : {respostas}')
                 
             except:
                 pass
         else:
-            con.send(str.encode('-ERR_40\n'))
+            con.send(str.encode('-ERR_40\n')) #Usuário não participa da partida
         mutex.release()
-    
-    elif msg[0].upper() == 'RESP':
-        if inicio:
-            con.send(str.encode(f'+RSPAK {s.termoRespostas()}\n'))
-        else:
-            con.send(str.encode('-ERR_44\n'))
 
     elif msg[0].upper() == 'QUIT':
         con.send(str.encode('+OK\n'))
@@ -206,7 +216,7 @@ def processa_msg_cliente(msg, con, cliente):
         mutex.release()
         return False
     else:
-        con.send(str.encode('-ERR Invalid command\n'))
+        con.send(str.encode('-ERR Comando_inválido\n'))
     return True
         
 def processa_cliente(con, cliente):
@@ -225,37 +235,3 @@ while True:
         threading.Thread(target=processa_cliente, args=(con, cliente,)).start()
     except: break
 sock.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
- # elif msg[0].upper() == 'LIST':
-    #     lista_arq = os.listdir('.')
-    #     con.send(str.encode('+OK {}\n'.format(len(lista_arq))))
-    #     for nome_arq in lista_arq:
-    #         if os.path.isfile(nome_arq):
-    #             status_arq = os.stat(nome_arq)
-    #             con.send(str.encode('arq: {} - {:.1f}KB\n'.
-    #                 format(nome_arq, status_arq.st_size/1024)))
-    #         elif os.path.isdir(nome_arq):
-    #             con.send(str.encode('dir: {}\n'.format(nome_arq)))
-    #         else:
-    #             con.send(str.encode('esp: {}\n'.format(nome_arq)))
-       
-    # elif msg[0].upper() == 'CWD':
-    #     caminho_solicitado = " ".join(msg[1:])
-    #     print('Novo Diretório: ', caminho_solicitado)
-    #     try:
-    #         os.chdir(caminho_solicitado)
-    #         con.send(str.encode('+OK\n'))
-    #     except Exception as e:
-    #         con.send(str.encode('-ERR Invalid command\n'))
