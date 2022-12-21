@@ -184,7 +184,7 @@ def processa_msg_cliente(msg, con, cliente):
                     con.send(str.encode('+CORRECT\n'))
                 else:
                     con.send(str.encode('+INCORRECT\n'))
-                print(f'Respostas : {gabarito[:len(s.respostas)]}')
+                print(f'Respostas : {s.termoRespostas()}')
                 
             except:
                 pass
@@ -193,9 +193,10 @@ def processa_msg_cliente(msg, con, cliente):
         mutex.release()
     
     elif msg[0].upper() == 'RESP':
-
         if inicio:
-            con.send(str.encode('+OK\n'))
+            con.send(str.encode(f'+RSPAK {s.termoRespostas()}\n'))
+        else:
+            con.send(str.encode('-ERR_44\n'))
 
     elif msg[0].upper() == 'QUIT':
         con.send(str.encode('+OK\n'))

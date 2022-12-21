@@ -61,6 +61,7 @@ print(f'[{s.escolhido}]{s.temaAtual}')
 for i in s.respostas:
     print(i, end="; ")
 print()
+print(comidas.termoPalavras())
 while len(s.respostas) > 0:
     print(f'Faltam {len(s.respostas)}!')
     print(s.verifyPalpite(input()))
