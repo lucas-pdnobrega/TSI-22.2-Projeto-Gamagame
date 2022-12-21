@@ -7,13 +7,14 @@ from time import sleep
 TAM_MSG = 1024 # Tamanho do bloco de mensagem
 HOST = '127.0.0.1' # IP do Servidor
 PORT = 40000 # Porta que o Servidor escuta
+encerramento = False
+
 def decode_cmd_usr(cmd_usr):
     cmd_map = {
         'join': 'join',
         'chute' : 'chut',
         'respostas': 'resp',
         'quit' : 'quit',
-        'hey': 'hey',
         'exit': 'quit'
     }
     tokens = cmd_usr.split()
@@ -23,17 +24,48 @@ def decode_cmd_usr(cmd_usr):
     else:
         return False
 
-# def processa_servidor():
-#     dados = sock.recv(TAM_MSG)
-#     print(dados.decode())
-#     msg_status = dados.decode().split('\n')[0]
-#     dados = dados[len(msg_status)+1:]
-#     print('STATUS:', msg_status)
-
-#     sleep(0)
-
 if len(sys.argv) > 1:
     HOST = sys.argv[1]
+
+def processa_servidor():
+
+    global encerramento
+
+    while True:
+
+        if encerramento:
+            return False
+            
+        dados = sock.recv(TAM_MSG)
+        if not dados: break
+        msg_status = dados.decode().split('\n')[0]
+        sys.stdout.write(f'{msg_status}\n')
+        sys.stdout.flush()
+
+        args = msg_status.split()
+
+        if args[0] == '-END':
+            print('Partida cancelada por problemas de conexão.\n')
+            encerramento = True
+
+        if args[0] == '+ACK':
+            print(f'Conexão aceita pelo servidor, usuário {args[1]}')
+
+        if args[0] == '+CORRECT':
+            print(f'O palpite estava correto!')
+
+        if args[0] == '+INCORRECT':
+            print(f'O palpite estava incorreto...')
+
+        if args[0] == '-ERR_40':
+            print(f'Erro 40 - Usuário não participante da partida')
+
+        elif args[0] == '+WIN':
+            print(f'Partida concluída! {args[1]} ganhou\n')
+            encerramento = True
+
+        elif args[0] == '+ANO':
+            print(f'O tema sorteado da vez é {args[1]}!\n')
 
 print('Servidor:', HOST+':'+str(PORT))
 
@@ -42,12 +74,15 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(serv)
 
 print('Para encerrar use EXIT, CTRL+D ou CTRL+C\n')
-#threading.Thread(target=processa_servidor, args=()).start()
 
+t = threading.Thread(target=processa_servidor, args=())
+t.daemon = True
+t.start()
 
-while True:
+while not encerramento:
+
     try:
-        cmd_usr = input('RYLP> ')
+        cmd_usr = input()
     except:
         cmd_usr = 'EXIT'
     cmd = decode_cmd_usr(cmd_usr)
@@ -55,48 +90,21 @@ while True:
         print('Comando indefinido:', cmd_usr)
     else:
         sock.send(str.encode(cmd))
-
-        dados = sock.recv(TAM_MSG)
-        if not dados: break
-        msg_status = dados.decode().split('\n')[0]
-        dados = dados[len(msg_status)+1:]
-        
-        print(msg_status)
-
-        if msg_status == '-END':
-            print('Partida cancelada por problemas de conexão!')
-            break
-
-        elif msg_status == '+WIN':
-            print(f'Partida concluída! {dados} ganhou')
-            des = input('Deseja jogar novamente? (S/n)')
-            if des.lower == 's':
-                continue
-            else:
-                break
-
-        elif msg_status == '+ANO':
-            print(f'O tema sorteado da vez é {dados}!')
-
         cmd = cmd.split()
         cmd[0] = cmd[0].upper()
 
         if cmd[0] == 'QUIT':
             break
-        
-        elif cmd[0] == 'HEY':
-            continue
 
         elif cmd[0] == 'JOIN':
             continue
 
         elif cmd[0] == 'CHUT':
-            dados = dados.decode()
-            print(dados)
+            continue
 
         elif cmd[0] == 'RESP':
             continue
-        
+
 sock.close()
 
 

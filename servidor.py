@@ -60,11 +60,11 @@ paises = Tema('Paises da Copa 2022', paises_da_copa_2022)
 s = Server([comidas, paises])
 
 mutex = threading.Semaphore(1)
-clientes = {}
+clientes = {} #Dicionário de clientes : socket
 gabarito = []
-inicio = False
-encerramento = False
-vitoria = False
+inicio = False #Flag de início de uma partida
+encerramento = False #Flag de encerramento (Partida cancelada, etc.)
+vitoria = False #Flag de vitória
 
 TAM_MSG = 1024 # Tamanho do bloco de mensagem
 HOST = '0.0.0.0' # IP do Servidor
@@ -76,10 +76,11 @@ sock.bind(serv)
 sock.listen(10)
 
 def broadcast(msg:str, dados:str = ''):
-
+    
     global clientes
 
     mensagem = f'{msg} {dados}\n'.strip()
+    print(mensagem)
 
     for cli in clientes:
         cli.send(str.encode(mensagem))
@@ -108,11 +109,21 @@ def listener():
 
         elif inicio == True and len(clientes) <= 1:
             # COMEÇAR ENCERRAMENTO
-            encerramento = True
+            broadcast('-END')
+            restart()
 
         elif inicio == True and len(s.respostas) == 0:
             # COMEÇAR VITÓRIA
             vitoria = True
+            vencedor = ''
+            maximo = 0
+            for cli in clientes:
+                if clientes[cli].pontuacao > maximo:
+                    maximo = clientes[cli].pontuacao
+                    vencedor = clientes[cli].nome
+
+            broadcast('+WIN', vencedor)
+            restart()
 
         mutex.release()
 
@@ -136,19 +147,8 @@ def processa_msg_cliente(msg, con, cliente):
     msg = msg.decode()
     print('Cliente', cliente, 'enviou', msg)
     msg = msg.split()
-    
-    # mutex.acquire()
-    # if encerramento:
-    #     broadcast('-END')
-    #     encerramento = False
-    # elif vitoria:
-    #     restart()
-    # mutex.release()
 
-    if msg[0].upper() == 'HEY':
-        con.send(str.encode('+HEY\n'))
-
-    elif msg[0].upper() == 'JOIN':
+    if msg[0].upper() == 'JOIN':
 
         nome_cli = "".join(msg[1:])
         print(f'Usuário {nome_cli} fornecido por {cliente}')
@@ -161,7 +161,7 @@ def processa_msg_cliente(msg, con, cliente):
             except Exception as e:
                 con.send(str.encode('-ERR {}\n'.format(e)))
         else:
-            con.send(str.encode('-ERR 40\n'))
+            con.send(str.encode('-ERR_40\n'))
         mutex.release()
 
     elif msg[0].upper() == 'CHUT':
@@ -172,10 +172,10 @@ def processa_msg_cliente(msg, con, cliente):
                 chute = "".join(msg[1:])
                 clientes[con].addTentativa(chute)
                 print(f'Respostas : {gabarito}')
-                print(f'{len(s.respostas)}')
                 print(f'<{clientes[con]}>: {chute}')
                 if s.verifyPalpite(chute):
                     clientes[con].pontuar()
+                    print(f'{len(s.respostas)}')
                     con.send(str.encode('+CORRECT\n'))
                 else:
                     con.send(str.encode('+INCORRECT\n'))
@@ -183,12 +183,13 @@ def processa_msg_cliente(msg, con, cliente):
             except:
                 pass
         else:
-            con.send(str.encode('-GNO 41\n'))
+            con.send(str.encode('-ERR_40\n'))
         mutex.release()
     
     elif msg[0].upper() == 'RESP':
-        con.send(str.encode('+OK\n'))
-    
+
+        if inicio:
+            con.send(str.encode('+OK\n'))
 
     elif msg[0].upper() == 'QUIT':
         con.send(str.encode('+OK\n'))
@@ -201,7 +202,6 @@ def processa_msg_cliente(msg, con, cliente):
         con.send(str.encode('-ERR Invalid command\n'))
     return True
         
-
 def processa_cliente(con, cliente):
     print('Cliente conectado', cliente)
     while True:
@@ -210,9 +210,7 @@ def processa_cliente(con, cliente):
     con.close()
     print('Cliente desconectado', cliente)
 
-
 threading.Thread(target=listener, args=()).start()
-
 
 while True:
     try:

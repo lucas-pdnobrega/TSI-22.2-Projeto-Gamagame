@@ -13,7 +13,6 @@ def decode_cmd_usr(cmd_usr):
         'chute' : 'chut',
         'respostas': 'resp',
         'quit' : 'quit',
-        'hey': 'hey',
         'exit': 'quit'
     }
     tokens = cmd_usr.split()
@@ -23,13 +22,46 @@ def decode_cmd_usr(cmd_usr):
     else:
         return False
 
-def processa_servidor():
-    while True:
+# def processa_servidor():
+#     dados = sock.recv(TAM_MSG)
+#     print(dados.decode())
+#     msg_status = dados.decode().split('\n')[0]
+#     dados = dados[len(msg_status)+1:]
+#     print('STATUS:', msg_status)
+
+#     sleep(0)
+
+if len(sys.argv) > 1:
+    HOST = sys.argv[1]
+
+print('Servidor:', HOST+':'+str(PORT))
+
+serv = (HOST, PORT)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect(serv)
+
+print('Para encerrar use EXIT, CTRL+D ou CTRL+C\n')
+
+#threading.Thread(target=processa_servidor, args=()).start()
+
+while True:
+    try:
+        cmd_usr = input('RYLP> ')
+    except:
+        cmd_usr = 'EXIT'
+    cmd = decode_cmd_usr(cmd_usr)
+    if not cmd:
+        print('Comando indefinido:', cmd_usr)
+    else:
+        sock.send(str.encode(cmd))
+
         dados = sock.recv(TAM_MSG)
         if not dados: break
         msg_status = dados.decode().split('\n')[0]
         dados = dados[len(msg_status)+1:]
+        
         print(msg_status)
+
         if msg_status == '-END':
             print('Partida cancelada por problemas de conexão!')
             break
@@ -45,52 +77,6 @@ def processa_servidor():
         elif msg_status == '+ANO':
             print(f'O tema sorteado da vez é {dados}!')
 
-if len(sys.argv) > 1:
-    HOST = sys.argv[1]
-
-print('Servidor:', HOST+':'+str(PORT))
-
-serv = (HOST, PORT)
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect(serv)
-
-print('Para encerrar use EXIT, CTRL+D ou CTRL+C\n')
-#threading.Thread(target=processa_servidor, args=()).start()
-
-
-while True:
-    try:
-        cmd_usr = input('RYLP> ')
-    except:
-        cmd_usr = 'EXIT'
-    cmd = decode_cmd_usr(cmd_usr)
-    if not cmd:
-        print('Comando indefinido:', cmd_usr)
-    else:
-        sock.send(str.encode(cmd))
-
-        # dados = sock.recv(TAM_MSG)
-        # if not dados: break
-        # msg_status = dados.decode().split('\n')[0]
-        # dados = dados[len(msg_status)+1:]
-        
-        # print(msg_status)
-
-        # if msg_status == '-END':
-        #     print('Partida cancelada por problemas de conexão!')
-        #     break
-
-        # elif msg_status == '+WIN':
-        #     print(f'Partida concluída! {dados} ganhou')
-        #     des = input('Deseja jogar novamente? (S/n)')
-        #     if des.lower == 's':
-        #         continue
-        #     else:
-        #         break
-
-        # elif msg_status == '+ANO':
-        #     print(f'O tema sorteado da vez é {dados}!')
-
         cmd = cmd.split()
         cmd[0] = cmd[0].upper()
 
@@ -104,7 +90,8 @@ while True:
             continue
 
         elif cmd[0] == 'CHUT':
-            continue
+            dados = dados.decode()
+            print(dados)
 
         elif cmd[0] == 'RESP':
             continue

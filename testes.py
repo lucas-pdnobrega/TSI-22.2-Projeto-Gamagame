@@ -54,23 +54,6 @@ Palavra(7,'Uruguai')]
 comidas = Tema('Comidas', comidas)
 paises = Tema('Paises da Copa 2022', paises_da_copa_2022)
 
-comidas.addPalavra(3, 'Omelete')
-
-# sorteadas1 = comidas.sortearPalavras(3)
-# for i in sorteadas1:
-#     print(i, end='; ')
-# print('',end = '\n')
-
-# sorteadas2 = comidas.sortearPalavras(5)
-# for i in sorteadas2:
-#     print(i, end='; ')
-# print('',end = '\n')
-
-# sorteadas3 = comidas.sortearPalavras(6)
-# for i in sorteadas3:
-#     print(i, end='; ')
-# print('',end = '\n')
-
 s = Server([comidas, paises])
 
 s.sortearTema()
@@ -81,9 +64,3 @@ print()
 while len(s.respostas) > 0:
     print(f'Faltam {len(s.respostas)}!')
     print(s.verifyPalpite(input()))
-# print('PREORDEM')
-# paises.preOrdem()
-# print('INORDEM')
-# paises.inOrdem()
-# print('POSORDEM')
-# paises.posOrdem()
