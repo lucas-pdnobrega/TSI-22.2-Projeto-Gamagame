@@ -28,7 +28,7 @@
   - QUIT : Notificação para saída do Cliente da partida.
 
 ## &nbsp; Respostas do Protocolo de Aplicação RYLP
-  - +ACK [args] : Utilizado pelo servidor para ...
+  - +ACK [args] : Utilizado pelo servidor para informa
   - +CORRECT : Utilizado pelo servidor para notificar que o palpite de um dado usuário foi correto.
   - +INCORRECT : Utilizado pelo servidor para notificar que o palpite de um dado usuário foi incorreto.
   - -ERR [args] : Utilizado para o servidor realizar a notificação personalizada de erro para o cliente.

@@ -9,7 +9,7 @@ class GamaException(Exception):
 
 class Tema:
     ''' 
-    Classe que armazena várias palavras organizadas nível de dificuldade.
+    Classe que armazena várias palavras organizadas por nível de dificuldade.
     '''
     def __init__(self, nome:str, palavras:list[Palavra]):
         try:

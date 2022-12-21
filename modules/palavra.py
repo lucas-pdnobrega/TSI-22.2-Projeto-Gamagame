@@ -42,11 +42,11 @@ class Palavra:
         return self.__peso
 
     @property
-    def termo(self) -> int:
+    def termo(self) -> str:
         return self.__termo
 
     @peso.setter
-    def peso(self, peso:int) -> int:
+    def peso(self, peso:int) -> None:
         try:
             assert peso > 0
             self.__peso = peso
@@ -54,7 +54,7 @@ class Palavra:
             raise GamaException('Entradas (peso) inválidas!')
 
     @termo.setter
-    def termo(self, termo:int) -> int:
+    def termo(self, termo:str) -> None:
         try:
             assert termo != ''
             self.__termo = termo
