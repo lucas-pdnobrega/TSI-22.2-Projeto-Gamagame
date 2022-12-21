@@ -10,12 +10,12 @@ import threading
 Definição de recursos para alimentação da aplicação
 '''
 #Lista de objetos Palavra 'comidas'
-comidas = [Palavra(10, 'Samgyetang'),
+comidas = [Palavra(12, 'Samgyetang'),
 Palavra(4, 'Macarronada'), 
 Palavra(3, 'Feijoada'),
 Palavra(2, 'Lasanha'),
 Palavra(1, 'Pizza'),
-Palavra(10, 'Shakshuka'),
+Palavra(12, 'Shakshuka'),
 Palavra(5, 'Torta'), 
 Palavra(4, 'Bolo'), 
 Palavra(6, 'Paçoca'),
@@ -30,7 +30,7 @@ Palavra(3, 'Frango'),
 Palavra(6, 'Pavê'),
 Palavra(9, 'Risoto'),
 Palavra(4, 'Espetinho'),
-Palavra(12, 'Strogonoff'),
+Palavra(10, 'Strogonoff'),
 Palavra(2, 'Coxinha'),
 Palavra(6, 'Panqueca'),
 Palavra(3, 'Pastel'),
@@ -195,31 +195,34 @@ def processa_msg_cliente(msg, con, cliente):
     elif msg[0].upper() == 'CHUT':
         
         mutex.acquire()
-        if con in clientes:
-            try:
-                chute = "".join(msg[1:])
-                if len(chute) > 0:
-                    clientes[con].addTentativa(chute)
-                    print(f'<{clientes[con]}>: {chute}')
+        if inicio:
+            if con in clientes:
+                try:
+                    chute = "".join(msg[1:])
+                    if len(chute) > 0:
+                        clientes[con].addTentativa(chute)
+                        print(f'<{clientes[con]}>: {chute}')
 
-                    #Função varrer as respostas pelo peso correspondente   
-                    peso = 0
-                    for res in s.respostas:
-                        if chute.lower() == res.termo.lower():
-                            peso = res.peso
+                        #Função varrer as respostas pelo peso correspondente   
+                        peso = 0
+                        for res in s.respostas:
+                            if chute.lower() == res.termo.lower():
+                                peso = res.peso
 
-                    if s.verifyPalpite(chute):
-                        clientes[con].pontuar(peso)
-                        con.send(str.encode('+CORRECT\n')) #Palpite Correto
+                        if s.verifyPalpite(chute):
+                            clientes[con].pontuar(peso)
+                            con.send(str.encode('+CORRECT\n')) #Palpite Correto
+                        else:
+                            con.send(str.encode('+INCORRECT\n')) #Palpite Incorreto
+                        print(f'Respostas : {respostas}')
                     else:
-                        con.send(str.encode('+INCORRECT\n')) #Palpite Incorreto
-                    print(f'Respostas : {respostas}')
-                else:
-                    con.send(str.encode('-ERR_43\n')) #Entrada Inválida
-            except:
-                pass
+                        con.send(str.encode('-ERR_43\n')) #Entrada Inválida
+                except:
+                    pass
+            else:
+                con.send(str.encode('-ERR_40\n')) #Usuário não participa da partida
         else:
-            con.send(str.encode('-ERR_40\n')) #Usuário não participa da partida
+            con.send(str.encode('-ERR_44\n'))
         mutex.release()
 
     elif msg[0].upper() == 'QUIT':

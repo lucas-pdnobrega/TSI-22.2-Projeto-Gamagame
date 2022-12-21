@@ -68,7 +68,7 @@ def processa_servidor():
             print(f'Erro 40 - Usuário não participante da partida\n')
 
         elif args[0] == '-ERR_41':
-            print(f'Erro 41 - Usuário já participante na partida\n')
+            print(f'Erro 41 - Endereço já está cadastrado da partida\n')
 
         elif args[0] == '-ERR_42':
             print(f'Erro 42 - Partida em andamento\n')
