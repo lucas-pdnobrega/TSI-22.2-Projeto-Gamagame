@@ -6,8 +6,9 @@ import threading
 TAM_MSG = 1024 # Tamanho do bloco de mensagem
 HOST = '127.0.0.1' # IP do Servidor
 PORT = 40000 # Porta que o Servidor escuta
-encerramento = False
+encerramento = False # Flag de encerramento do cliente
 
+#Função decodificar comandos do usuário
 def decode_cmd_usr(cmd_usr):
     if encerramento:
         return ''.join('quit')
@@ -27,7 +28,9 @@ if len(sys.argv) > 1:
     HOST = sys.argv[1]
 
 def processa_servidor():
-
+    '''
+    Função daemon para processar respostas do servidor
+    '''
     global encerramento
 
     while True:
@@ -56,7 +59,7 @@ def processa_servidor():
             print(f'O palpite estava incorreto...')
 
         elif args[0] == '+WIN':
-            print(f'Partida concluída! {args[1]} ganhou\n')
+            print(f'Partida concluída! {args[1]} ganhou com {args[2]} pontos!\n')
             encerramento = True
 
         elif args[0] == '+ANO':
@@ -86,6 +89,7 @@ sock.connect(serv)
 
 print('Para encerrar use EXIT, CTRL+D ou CTRL+C\n')
 
+#Inicialização do Daemon de processamento de respostas do servidor
 t = threading.Thread(target=processa_servidor, args=())
 t.daemon = True
 t.start()
@@ -99,6 +103,7 @@ while True:
     except:
         cmd_usr = 'QUIT'
     cmd = decode_cmd_usr(cmd_usr)
+
     if not cmd:
         print('Comando indefinido:', cmd_usr)
     else:

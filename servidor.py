@@ -27,7 +27,16 @@ Palavra(1, 'Salpicão'),
 Palavra(1, 'Arroz'),
 Palavra(3, 'Peru'), 
 Palavra(3, 'Frango'), 
-Palavra(6, 'Pavê')]
+Palavra(6, 'Pavê'),
+Palavra(9, 'Risoto'),
+Palavra(4, 'Espetinho'),
+Palavra(12, 'Strogonoff'),
+Palavra(2, 'Coxinha'),
+Palavra(6, 'Panqueca'),
+Palavra(3, 'Pastel'),
+Palavra(2, 'Pão'),
+Palavra(7, 'Sopa')]
+
 #Lista de objetos Palavra 'paises_da_copa_2022'
 paises_da_copa_2022 = [Palavra(3,'Alemanha'),
 Palavra(1,'Argentina'),
@@ -83,11 +92,11 @@ sock.bind(serv)
 sock.listen(10)
 
 
-def broadcast(msg:str, dados:str = ''):
+def broadcast(msg:str, dados:str = '', adendo:any = None):
     '''Função para realização do broadcast para todos os jogadores registrados na partida atual'''
     global clientes
 
-    mensagem = f'{msg} {dados}\n'.strip()
+    mensagem = f'{msg} {dados} {adendo}\n'.strip()
     print(mensagem)
 
     for cli in clientes:
@@ -136,7 +145,7 @@ def listener():
                     maximo = clientes[cli].pontuacao
                     vencedor = clientes[cli].nome
 
-            broadcast('+WIN', vencedor)
+            broadcast('+WIN', vencedor, maximo)
             restart()
 
         mutex.release()
@@ -195,8 +204,14 @@ def processa_msg_cliente(msg, con, cliente):
                 clientes[con].addTentativa(chute)
                 print(f'<{clientes[con]}>: {chute}')
 
+                #Função varrer as respostas pelo peso correspondente   
+                peso = 0
+                for res in s.respostas:
+                    if chute.lower() == res.termo.lower():
+                        peso = res.peso
+
                 if s.verifyPalpite(chute):
-                    clientes[con].pontuar()
+                    clientes[con].pontuar(peso)
                     con.send(str.encode('+CORRECT\n')) #Palpite Correto
                 else:
                     con.send(str.encode('+INCORRECT\n')) #Palpite Incorreto
@@ -220,6 +235,9 @@ def processa_msg_cliente(msg, con, cliente):
     return True
         
 def processa_cliente(con, cliente):
+    '''
+    Função para entrada de cliente no servidor
+    '''
     print('Cliente conectado', cliente)
     while True:
         msg = con.recv(TAM_MSG)
@@ -227,6 +245,7 @@ def processa_cliente(con, cliente):
     con.close()
     print('Cliente desconectado', cliente)
 
+#Inicialização do daemon de estado da partida
 threading.Thread(target=listener, args=()).start()
 
 while True:

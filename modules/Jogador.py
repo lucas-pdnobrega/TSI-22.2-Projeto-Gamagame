@@ -32,11 +32,11 @@ class Jogador():
         '''Retorna a pilha de tentativas de um jogador.'''
         return self.__tentativas
 
-    def pontuar(self) -> None:
+    def pontuar(self, peso:int) -> None:
         '''
         Incrementa a pontuação do jogador.
         '''
-        self.__pontuacao += 10
+        self.__pontuacao += peso
     
     def addTentativa(self, tentativa:str) -> bool:
         '''Adiciona as tentativas do jogador em sua pilha de tentativas.'''

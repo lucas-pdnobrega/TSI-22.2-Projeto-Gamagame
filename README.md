@@ -6,13 +6,13 @@
 
     A aplicação Gamagame é um jogo baseado em um chat onde haverá uma
     lista dividido em categorias (temas). Para cada categoria haverá 
-    3 itens (palavras) sorteados e, no início do jogo, o chat será 
+    5 itens (palavras) sorteados e, no início do jogo, o chat será 
     informado qual a categoria foi sorteada e os participantes do chat
     tentarão acertar os itens sorteados. Clientes mandam suas respostas
     (tentativas) para o servidor e este administra a partida. Quando a 
     resposta (tentativa) informada pelo usuário for uma das que foram 
-    sorteadas, aquele participante que respondeu corretamente ganhará 
-    10 pontos.
+    sorteadas, aquele participante que respondeu corretamente o peso da palavra 
+    como pontuação, o peso é baseado na dificuldade.
 
 
 ## &nbsp; Integrantes

@@ -51,8 +51,7 @@ class Server():
         '''Método que sorteia o tema da partida.'''
         self.__escolhido = random.randint(0, len(self.__temas)-1)
         self.__temaAtual = self.__temas[self.__escolhido].nome
-        self.__respostas = self.__temas[self.__escolhido].sortearPalavras(3)
-        # [Palavra#1, Palavra#2, ...]
+        self.__respostas = self.__temas[self.__escolhido].sortearPalavras(5)
 
     def verifyPalpite(self, palpite:str) -> bool:
         '''Método utilizado para verificar se o palpite enviado está correto ou não.'''
