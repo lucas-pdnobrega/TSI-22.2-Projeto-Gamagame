@@ -45,18 +45,14 @@ def processa_servidor():
         sys.stdout.flush()
         args = msg_status.split()
 
-        if args[0] == '-END':
-            print('Partida cancelada por problemas de conexão.\n')
-            encerramento = True
-
-        elif args[0] == '+ACK':
-            print(f'Conexão aceita pelo servidor, usuário {args[1]}')
+        if args[0] == '+ACK':
+            print(f'Conexão aceita pelo servidor, usuário {args[1]}\n')
 
         elif args[0] == '+CORRECT':
-            print(f'O palpite estava correto!')
+            print(f'O palpite estava correto!\n')
 
         elif args[0] == '+INCORRECT':
-            print(f'O palpite estava incorreto...')
+            print(f'O palpite estava incorreto...\n')
 
         elif args[0] == '+WIN':
             print(f'Partida concluída! {args[1]} ganhou com {args[2]} pontos!\n')
@@ -65,20 +61,24 @@ def processa_servidor():
         elif args[0] == '+ANO':
             print(f'O tema sorteado da vez é {args[1]}!\n')
 
+        elif args[0] == '-END':
+            print('Partida cancelada por problemas de conexão.\n')
+            encerramento = True
+
         elif args[0] == '-ERR_40':
-            print(f'Erro 40 - Usuário não participante da partida')
+            print(f'Erro 40 - Usuário não participante da partida\n')
 
         elif args[0] == '-ERR_41':
-            print(f'Erro 41 - Usuário já participante na partida')
+            print(f'Erro 41 - Usuário já participante na partida\n')
 
         elif args[0] == '-ERR_42':
-            print(f'Erro 42 - Partida em andamento')
+            print(f'Erro 42 - Partida em andamento\n')
 
         elif args[0] == '-ERR_43':
-            print(f'Erro 43 - Entrada inválida')
+            print(f'Erro 43 - Entrada inválida\n')
 
         elif args[0] == '-ERR_44':
-            print(f'Erro 44 - Partida não iniciada')
+            print(f'Erro 44 - Partida não iniciada\n')
 
 
 print('Servidor:', HOST+':'+str(PORT))
@@ -87,7 +87,7 @@ serv = (HOST, PORT)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(serv)
 
-print('Para encerrar use EXIT, CTRL+D ou CTRL+C\n')
+print('Para encerrar use QUIT, CTRL+D ou CTRL+C\n')
 
 #Inicialização do Daemon de processamento de respostas do servidor
 t = threading.Thread(target=processa_servidor, args=())

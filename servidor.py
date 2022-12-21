@@ -153,13 +153,13 @@ def listener():
 def restart():
     '''Função para reinicializar todos as propriedades globais do servidor'''
     global clientes
-    global gabarito
     global inicio
     global encerramento
     global vitoria
+    global respostas
 
     clientes = {}
-    gabarito = []
+    respostas = []
     inicio = False
     encerramento = False
     vitoria = False
@@ -224,7 +224,6 @@ def processa_msg_cliente(msg, con, cliente):
         mutex.release()
 
     elif msg[0].upper() == 'QUIT':
-        con.send(str.encode('+OK\n'))
         mutex.acquire()
         if con in clientes:
             clientes.pop(con)
