@@ -1,6 +1,64 @@
 Estruturas do nosso projeto
 
 1 - Objeto jogador
-2 - Árvore binária de temas (uma espécie de sistema de arquivos)
+2 - Arvore binaria de temas (uma especie de sistema de arquivos)
 3 - Pilha de tentativs de cada jogador
 4 - Listas de temas
+
+# Metodos do RYLP
+
+## Codigos de retorno
+
+- Primeiro digito da esquerda para a direita -> classe do metodo
+
+    1 -> metodo para entrar na partida
+    2 -> metodo para iniciar a partida
+    3 -> metodo para enviar palpite
+    4 -> metodo para listar as tentativas
+    5 -> metodo para listar a pontuacao
+    6 -> metodo para listar as repostas corretas 
+    7 -> metodo para finalizar o jogo
+
+
+- Segundo digito da esquerda para a direita -> tipo do retorno
+
+    0 -> retorno positivo - deu certo
+    1 -> retorno negativo - deu errado
+
+## Documentacao
+
+-> Entrar na partida - classe 1
+GJOIN username
+    +GYES 10 [JOINED]\n\r
+    -GNO 11 [Exception]\n\r
+
+-> Iniciar o jogo - classe 2
+GSTART
+    +GYES 20 [STARTED]\n\r
+    -GNO 21 [Exception]\n\r
+
+-> Dar o palpite - classe 3
+GGUESS word
+    +GYES 30 [CORRECT]\n\r
+    -GNO 31 [WRONG]\n\r
+
+
+-> Listar as tentativas - classe 4
+GTRIES
+    +GYES 40 [RETURNED]\n\r
+    -GNO 41 [Exception]\n\r
+
+-> Listar a pontuacao - classe 5
+GSCORE
+    +GYES 50 [PONTUACAO]\n\r
+    -GNO 51 [Exception]\n\
+
+-> Listar as respostas corretas - classe 6
+GANS
+    +GYES 60 [RESPOSTAS]\n\r
+    -GNO 61 [SEM RESPOSTA]\n\r
+
+-> Finalizar o jogo - classe 7
+GEND
+    +GYES 70 CLOSING\n\r
+    -GNO 71 [NOT CLOSING]\n\r

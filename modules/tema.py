@@ -6,7 +6,11 @@ class GamaException(Exception):
     def __init__(self, msg) -> None:
         super().__init__(msg)
 
+
 class Tema:
+    ''' 
+    DOCUMENTAÇÃO
+    '''
     def __init__(self, nome:str, palavras:list[Palavra]):
         try:
             assert nome != '' and len(palavras) > 0
@@ -42,12 +46,19 @@ class Tema:
             temp.append(str(i))
         return temp
 
-    def addPalavra(self, peso:int, valor:str):
+    def addPalavra(self, peso:int, termo:str):
         try:
-            assert peso > 0 and valor != '' and str(Palavra(peso, valor)) not in (self.__strPalavras())
-            self.__avlPalavras.insert(Palavra(peso, valor))
+            assert peso > 0 and termo != '' and str(Palavra(peso, termo)) not in (self.__strPalavras())
+            self.__avlPalavras.insert(Palavra(peso, termo))
         except AssertionError:
-            raise GamaException('Entradas (peso e/ou valor) inválidas!')
+            raise GamaException('Entradas (peso e/ou termo) inválidas!')
+
+    def delPalavra(self, peso:int, termo:str):
+        try:
+            assert peso > 0 and termo != '' and str(Palavra(peso, termo)) in (self.__strPalavras())
+            self.__avlPalavras.delete(Palavra(peso, termo))
+        except AssertionError:
+            raise GamaException('Palavra inválida! Não está contida no tema!')
 
     def sortearPalavras(self, teto:int) -> list:
         try:

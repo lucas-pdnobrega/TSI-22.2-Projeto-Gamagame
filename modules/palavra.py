@@ -3,16 +3,16 @@ class GamaException(Exception):
         super().__init__(msg)
 
 class Palavra:
-    def __init__(self, peso:int, valor:str):
+    def __init__(self, peso:int, termo:str):
         try:
-            assert peso > 0 and valor != ''
+            assert peso > 0 and termo != ''
             self.__peso = peso
-            self.__valor = valor
+            self.__termo = termo
         except AssertionError:
-            raise GamaException('Entradas (peso e/ou valor) inválidas!')
+            raise GamaException('Entradas (peso e/ou termo) inválidas!')
 
     def __str__(self):
-        return f'{self.__valor} : {self.__peso}'
+        return f'{self.__termo} : {self.__peso}'
 
     def __lt__(self, other) -> bool:
         return self.__peso < other.__peso 
@@ -37,8 +37,8 @@ class Palavra:
         return self.__peso
 
     @property
-    def valor(self) -> int:
-        return self.__valor
+    def termo(self) -> int:
+        return self.__termo
 
     @peso.setter
     def peso(self, peso:int) -> int:
@@ -48,10 +48,10 @@ class Palavra:
         except AssertionError:
             raise GamaException('Entradas (peso) inválidas!')
 
-    @valor.setter
-    def valor(self, valor:int) -> int:
+    @termo.setter
+    def termo(self, termo:int) -> int:
         try:
-            assert valor != ''
-            self.__valor = valor
+            assert termo != ''
+            self.__termo = termo
         except AssertionError:
-            raise GamaException('Entradas (valor) inválidas!')
+            raise GamaException('Entradas (termo) inválidas!')

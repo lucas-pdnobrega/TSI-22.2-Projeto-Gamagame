@@ -38,9 +38,9 @@ def clientthread(conn, addr):
             except:
                 continue
 
-def broadcast(message,connection):
+def broadcast(message, connection):
     for clients in list_of_clients:
-        if clients!=connection:
+        if clients != connection:
             try:
                 clients.send(message)
             except:
