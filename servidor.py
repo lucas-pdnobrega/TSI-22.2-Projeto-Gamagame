@@ -150,19 +150,26 @@ def processa_msg_cliente(msg, con, cliente):
 
     if msg[0].upper() == 'JOIN':
 
-        nome_cli = "".join(msg[1:])
-        print(f'Usuário {nome_cli} fornecido por {cliente}')
+        if not inicio:
+            nome_cli = "".join(msg[1:])
 
-        mutex.acquire()
-        if cliente not in clientes:
-            try:
-                clientes[con] = Jogador(nome_cli)
-                con.send(str.encode('+ACK {}\n'.format(clientes[con].nome)))
-            except Exception as e:
-                con.send(str.encode('-ERR {}\n'.format(e)))
+            if len(nome_cli) > 1:
+                print(f'Usuário {nome_cli} fornecido por {cliente}')
+
+                mutex.acquire()
+                if con not in clientes and nome_cli not in clientes.values():
+                    try:
+                        clientes[con] = Jogador(nome_cli)
+                        con.send(str.encode('+ACK {}\n'.format(clientes[con].nome)))
+                    except Exception as e:
+                        con.send(str.encode('-ERR {}\n'.format(e)))
+                else:
+                    con.send(str.encode('-ERR_41\n'))
+                mutex.release()
+            else:
+                con.send(str.encode('-ERR_43\n'))
         else:
-            con.send(str.encode('-ERR_40\n'))
-        mutex.release()
+            con.send(str.encode('-ERR_42\n'))
 
     elif msg[0].upper() == 'CHUT':
         
@@ -171,14 +178,13 @@ def processa_msg_cliente(msg, con, cliente):
             try:
                 chute = "".join(msg[1:])
                 clientes[con].addTentativa(chute)
-                print(f'Respostas : {gabarito}')
                 print(f'<{clientes[con]}>: {chute}')
                 if s.verifyPalpite(chute):
                     clientes[con].pontuar()
-                    print(f'{len(s.respostas)}')
                     con.send(str.encode('+CORRECT\n'))
                 else:
                     con.send(str.encode('+INCORRECT\n'))
+                print(f'Respostas : {gabarito[:len(s.respostas)]}')
                 
             except:
                 pass
