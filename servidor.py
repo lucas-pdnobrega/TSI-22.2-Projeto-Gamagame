@@ -3,6 +3,7 @@ from modules.palavra import Palavra
 from modules.tema import Tema
 from modules.jogador import Jogador
 from modules.servidor import Server, GamaException
+
 import socket
 import threading
 import sys

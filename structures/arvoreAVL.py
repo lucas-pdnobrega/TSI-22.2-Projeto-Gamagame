@@ -4,7 +4,8 @@
 #  https://www.geeksforgeeks.org/avl-tree-set-2-deletion/?ref=lbp
 # Adaptações feitas pelo professor Alex para a disciplina de Estrutura de Dados
 # Última modificação: 17/05/2022
-  
+from typing import List
+
 class Node(object): 
     '''Class used to create a generic tree node instance in memory'''
     def __init__(self, value): 
@@ -271,7 +272,7 @@ class AVLTree(object):
  
         return self.getMinValueNode(root.left)
 
-    def getNodes(self)->list:
+    def getNodes(self)->List:
         """
         --MÉTODO ADICIONAL DA EQUIPE--
         Método que obtem todas as cargas dos nós armazenados na árvore AVL em uma lista
@@ -281,7 +282,7 @@ class AVLTree(object):
             self.__root = self.__getNodes(self.__root, nodes)
         return nodes
 
-    def __getNodes(self, root:Node, nodes:list)->Node: 
+    def __getNodes(self, root:Node, nodes:List)->Node: 
         if not root:
             return
         self.__getNodes(root.left, nodes)

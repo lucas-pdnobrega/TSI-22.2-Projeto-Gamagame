@@ -1,5 +1,6 @@
 from structures.arvoreAVL import AVLTree
 from modules.palavra import Palavra
+from typing import List
 import random
 
 class GamaException(Exception):
@@ -11,7 +12,7 @@ class Tema:
     ''' 
     Classe que armazena várias palavras organizadas por nível de dificuldade.
     '''
-    def __init__(self, nome:str, palavras:list[Palavra]):
+    def __init__(self, nome:str, palavras:List[Palavra]):
         try:
             assert nome != '' and len(palavras) > 0
             self.__nome = nome
@@ -29,11 +30,11 @@ class Tema:
         return self.__nome
 
     @property
-    def avlPalavras(self) -> list[Palavra]:
+    def avlPalavras(self) -> List[Palavra]:
         '''Retorna a lista de palavras que está na árvore'''
         return self.__avlPalavras.getNodes()
 
-    def __preencherPalavras(self, palavras:list[Palavra]):
+    def __preencherPalavras(self, palavras:List[Palavra]):
         '''Insere novas palavras na árvore de palavras'''
         for palavra in palavras:
             self.__avlPalavras.insert(palavra)
@@ -68,7 +69,7 @@ class Tema:
         except AssertionError:
             raise GamaException('Palavra inválida! Não está contida no tema!')
 
-    def sortearPalavras(self, teto:int) -> list:
+    def sortearPalavras(self, teto:int) -> List:
         '''Sorteia as palavras de um tema. A quantidade de palavras é limitada pelo parâmetro inteiro "teto".'''
         try:
             assert teto > 0 and teto <= len(self.__strPalavras())

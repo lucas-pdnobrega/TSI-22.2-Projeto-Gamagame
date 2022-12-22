@@ -1,4 +1,5 @@
 from modules.tema import Tema
+from typing import List
 import random
 
 class GamaException(Exception):
@@ -10,7 +11,7 @@ class Server():
     Classe que gerencia os dados do servidor.
     '''
     #temas forma uma lista 
-    def __init__(self, temas:list[Tema]):
+    def __init__(self, temas:List[Tema]):
         self.__temas = temas
         self.__escolhido = None
         self.__temaAtual = ''
@@ -23,7 +24,7 @@ class Server():
         return str(temas)
         
     @property
-    def temas(self) -> list:
+    def temas(self) -> List:
         return self.__temas
 
     @property
@@ -35,7 +36,7 @@ class Server():
         return self.__temaAtual
 
     @property
-    def respostas(self) -> list:
+    def respostas(self) -> List:
         return self.__respostas
 
     @escolhido.setter
