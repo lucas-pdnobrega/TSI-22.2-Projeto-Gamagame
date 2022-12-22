@@ -2,25 +2,32 @@
 import socket
 import sys
 import threading
+from modules.utils import loading
 
 TAM_MSG = 1024 # Tamanho do bloco de mensagem
 HOST = '127.0.0.1' # IP do Servidor
 PORT = 40000 # Porta que o Servidor escuta
+mutex = threading.Semaphore(1) #Semáforo para exclusão mútua
 encerramento = False # Flag de encerramento do cliente
 
 #Função decodificar comandos do usuário
 def decode_cmd_usr(cmd_usr):
-    if encerramento:
-        return ''.join('quit')
     cmd_map = {
         'join': 'join',
         'chute' : 'chut',
-        'quit' : 'quit',
+        'quit' : 'quit'
     }
     tokens = cmd_usr.split()
-    if tokens[0].lower() in cmd_map:
+    
+    if encerramento:
+        return ''.join('quit')
+    elif tokens[0].lower() in cmd_map:
         tokens[0] = cmd_map[tokens[0].lower()]
         return " ".join(tokens)
+
+    elif cmd_usr != '':
+        return f'chut {cmd_usr}'
+
     else:
         return False
 
@@ -29,11 +36,14 @@ if len(sys.argv) > 1:
 
 def processa_servidor():
     '''
-    Função daemon para processar respostas do servidor
+    Função thread para processar respostas do servidor
     '''
     global encerramento
 
     while True:
+
+        if encerramento:
+            break
 
         dados = sock.recv(TAM_MSG)
         if not dados: break
@@ -46,14 +56,16 @@ def processa_servidor():
             print(f'Conexão aceita pelo servidor, usuário {args[1]}\n')
 
         elif args[0] == '+CORRECT':
-            print(f'O palpite estava correto!\n')
+            print('\033[1;36m O palpite estava correto!\033[1;0m\n')
 
         elif args[0] == '+INCORRECT':
-            print(f'O palpite estava incorreto...\n')
+            print('\033[1;31m O palpite estava incorreto...\033[1;0m\n')
 
         elif args[0] == '+WIN':
-            print(f'Partida concluída! {args[1]} ganhou com {args[2]} pontos!\n')
+            print(f'\n\033[1;33m Partida concluída! {args[1]} ganhou com {args[2]} pontos!\033[0m\n')
+            mutex.acquire()
             encerramento = True
+            mutex.release()
             break
 
         elif args[0] == '+ANO':
@@ -61,7 +73,9 @@ def processa_servidor():
 
         elif args[0] == '-END':
             print('Partida cancelada por problemas de conexão.\n')
+            mutex.acquire()
             encerramento = True
+            mutex.release()
             break
 
         elif args[0] == '-ERR_40':
@@ -79,8 +93,6 @@ def processa_servidor():
         elif args[0] == '-ERR_44':
             print(f'Erro 44 - Partida não iniciada\n')
 
-        elif args[0] == '-ERR_45':
-            print(f'Erro 45 - Comando inválido\n')
         else:
             print(f'Erro desconhecido - {args[1]}\n')
 
@@ -91,17 +103,20 @@ serv = (HOST, PORT)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(serv)
 
+loading(0.3, 2, 1)
+
 print('Para encerrar use QUIT, CTRL+D ou CTRL+C\n')
 
-#Inicialização do Daemon de processamento de respostas do servidor
+#Inicialização do Thread de processamento de respostas do servidor
 t = threading.Thread(target=processa_servidor, args=())
-t.daemon = True
 t.start()
+
+
 
 while True:
 
     if encerramento:
-            break
+        break
     try:
         cmd_usr = input()
     except:

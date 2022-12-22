@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 from modules.palavra import Palavra
 from modules.tema import Tema
-from modules.servidor import Server
 from modules.jogador import Jogador
+from modules.servidor import Server, GamaException
 import socket
 import threading
+import sys
 
 '''
 Definição de recursos para alimentação da aplicação
@@ -75,10 +76,23 @@ s = Server([comidas, paises]) # Classe responsável por administrar os dados do 
 
 mutex = threading.Semaphore(1) #Semáforo para exclusão mútua
 clientes = {} #Dicionário de clientes : socket
-respostas = [] #Lista de respostas em formato string ao invés de OBJ(Palavras)
+respostas = [] #Lista de respostas em str ao invés de objetos Palavra() para conveniência
+
+'''
+Função para extrair máximo de jogadores por partida, se aplicável
+'''
+if len(sys.argv) > 1:
+    try:
+        maxjogadores = int(sys.argv[1])
+    except:
+        raise GamaException('Número de participantes fornecido é inválido!')
+else:
+    maxjogadores = 2
+
 inicio = False #Flag de início de uma partida
-encerramento = False #Flag de encerramento (Partida cancelada, etc.)
+encerramento = False #Flag de encerramento (Partida cancelada)
 vitoria = False #Flag de vitória
+
 TAM_MSG = 1024 # Tamanho do bloco de mensagem
 HOST = '0.0.0.0' # IP do Servidor
 PORT = 40000 # Porta que o Servidor escuta
@@ -93,7 +107,9 @@ sock.listen(10)
 
 
 def broadcast(msg:str, dados:str = '', adendo:any = ''):
-    '''Função para realização do broadcast para todos os jogadores registrados na partida atual'''
+    '''
+    Função para realização do broadcast para todos os jogadores registrados na partida atual
+    '''
     global clientes
 
     mensagem = f'{msg} {dados} {adendo}\n'.strip()
@@ -103,7 +119,9 @@ def broadcast(msg:str, dados:str = '', adendo:any = ''):
         cli.send(str.encode(mensagem))
 
 def listener():
-    '''Função thread para averiguação do estado atual do servidor e da partida'''
+    '''
+    Função thread para averiguação do estado atual do servidor e da partida
+    '''
     global mutex
     global s
     global clientes
@@ -111,34 +129,34 @@ def listener():
     global inicio
     global encerramento
     global vitoria
+    global maxjogadores
 
     while True:
         mutex.acquire()
-        if len(clientes) > 1 and inicio == False:
+        if len(clientes) == maxjogadores and inicio == False:
             # INICIALIZAR O SORTEIO DO TEMA
             inicio = True
             s.sortearTema()
-            #Definição de lista de respostas em formato str ao invés de OBJ
+
+            #Preenchimento da lista de respostas em str para logging
             res = s.respostas
             for r in res:
                 respostas.append(str(r))
             print(f'Tema Atual : {s.temaAtual}')
             broadcast('+ANO', s.temaAtual)
 
-        elif inicio == True and len(clientes) <= 1:
+        elif inicio == True and len(clientes) < maxjogadores:
             # INICIAR BROADCAST DE ENCERRAMENTO
-
             broadcast('-END')
             restart()
 
         elif inicio == True and len(s.respostas) == 0:
             # INICIAR BROADCAST DE VITÓRIA
-
             vitoria = True
             vencedor = ''
             maximo = 0
 
-            #PESQUISA LINEAR PELO VENCEDOR
+            #PESQUISA LINEAR PELO VENCEDOR (Prioridade aos primeiros da lista)
             for cli in clientes:
                 if clientes[cli].pontuacao > maximo:
                     maximo = clientes[cli].pontuacao
@@ -146,10 +164,15 @@ def listener():
 
             broadcast('+WIN', vencedor, maximo)
             restart()
+
         mutex.release()
 
 def restart():
-    '''Função para reinicializar todos as propriedades globais do servidor'''
+    '''
+    Função para reinicializar todos as propriedades globais do servidor
+    '''
+    print('Reinicialização...')
+    global mutex
     global clientes
     global inicio
     global encerramento
@@ -203,7 +226,7 @@ def processa_msg_cliente(msg, con, cliente):
                         clientes[con].addTentativa(chute)
                         print(f'<{clientes[con]}>: {chute}')
 
-                        #Função varrer as respostas pelo peso correspondente   
+                        #Varrer as respostas pelo peso correspondente   
                         peso = 0
                         for res in s.respostas:
                             if chute.lower() == res.termo.lower():
