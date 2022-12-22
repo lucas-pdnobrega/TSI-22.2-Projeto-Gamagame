@@ -22,7 +22,7 @@ def decode_cmd_usr(cmd_usr):
     
     if encerramento:
         return ''.join('quit')
-    elif tokens[0].lower() in cmd_map:
+    elif len(tokens) > 0 and tokens[0].lower() in cmd_map:
         tokens[0] = cmd_map[tokens[0].lower()]
         return " ".join(tokens)
     elif participa == True:
