@@ -71,11 +71,11 @@ Palavra(7,'Uruguai')]
 
 #Inserção das listas de palavras nos seus temas correspondentes
 comidas = Tema('Comidas', comidas)
-paises = Tema('Paises da Copa 2022', paises_da_copa_2022)
+paises = Tema('Países', paises_da_copa_2022)
 s = Server([comidas, paises]) # Classe responsável por administrar os dados do servidor
 
 mutex = threading.Semaphore(1) #Semáforo para exclusão mútua
-clientes = {} #Dicionário de clientes : socket
+clientes = {} #Dicionário de jogadores {socket : objeto Jogador()}
 respostas = [] #Lista de respostas em str ao invés de objetos Palavra() para conveniência
 
 '''

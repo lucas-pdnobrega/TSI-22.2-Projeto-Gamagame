@@ -9,6 +9,7 @@ HOST = '127.0.0.1' # IP do Servidor
 PORT = 40000 # Porta que o Servidor escuta
 mutex = threading.Semaphore(1) #Semáforo para exclusão mútua
 encerramento = False # Flag de encerramento do cliente
+participa = False # Flag de se o cliente participa de uma partida
 
 #Função decodificar comandos do usuário
 def decode_cmd_usr(cmd_usr):
@@ -24,10 +25,8 @@ def decode_cmd_usr(cmd_usr):
     elif tokens[0].lower() in cmd_map:
         tokens[0] = cmd_map[tokens[0].lower()]
         return " ".join(tokens)
-
-    elif cmd_usr != '':
+    elif participa == True:
         return f'chut {cmd_usr}'
-
     else:
         return False
 
@@ -39,6 +38,7 @@ def processa_servidor():
     Função thread para processar respostas do servidor
     '''
     global encerramento
+    global participa
 
     while True:
 
@@ -55,6 +55,9 @@ def processa_servidor():
 
             if args[0] == '+ACK':
                 print(f'Conexão aceita pelo servidor, usuário {args[1]}\n')
+                mutex.acquire()
+                participa = True
+                mutex.release()
 
             elif args[0] == '+CORRECT':
                 print('\033[1;36m O palpite estava correto!\033[1;0m\n')
