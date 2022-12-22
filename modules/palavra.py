@@ -20,22 +20,22 @@ class Palavra:
         return f'{self.__termo} : {self.__peso}'
 
     def __lt__(self, other) -> bool:
-        return self.__peso < other.__peso 
+        return self.__peso < other
 
     def __le__(self, other) -> bool:
-        return self.__peso <= other.__peso 
+        return self.__peso <= other
 
     def __eq__(self, other) -> bool:
-        return self.__peso == other.__peso 
+        return self.__peso == other
 
     def __ne__(self, other) -> bool:
-        return self.__peso != other.__peso 
+        return self.__peso != other 
 
     def __gt__(self, other) -> bool:
-        return self.__peso > other.__peso 
+        return self.__peso > other
 
     def __ge__(self, other) -> bool:
-        return self.__peso >= other.__peso 
+        return self.__peso >= other
 
     @property
     def peso(self) -> int:
