@@ -107,7 +107,7 @@ sock.connect(serv)
 
 loading(0.3, 2, 1) #Exibir título do projeto
 
-print('Para encerrar use QUIT, CTRL+D ou CTRL+C\n')
+print('Para entrar em uma partida, utilize join seguido de seu usuário\nPara encerrar use QUIT, CTRL+D ou CTRL+C\n')
 
 #Inicialização do Thread de processamento de respostas do servidor
 t = threading.Thread(target=processa_servidor, args=())

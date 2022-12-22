@@ -73,7 +73,11 @@ Palavra(7,'Uruguai')]
 comidas = Tema('Comidas', comidas)
 paises = Tema('Países', paises_da_copa_2022)
 s = Server([comidas, paises]) # Classe responsável por administrar os dados do servidor
-
+'''
+Para adicionar temas ao servidor, s.temas.append(Tema(nome, palavras))
+Para adicionar novas palavras a um dado tema do servidor, s.temas[i].addPalavra(peso, termo)
+Para verificar se uma palavra está contida em um dado tema, return True if Palavra(peso, termo) in s.temas[i].avlPalavras else False
+'''
 mutex = threading.Semaphore(1) #Semáforo para exclusão mútua
 clientes = {} #Dicionário de jogadores {socket : objeto Jogador()}
 respostas = [] #Lista de respostas em str ao invés de objetos Palavra() para conveniência

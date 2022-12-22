@@ -32,7 +32,7 @@ def loading(t, vezes, clear):
        - Renato Melo
        - Yago César
     \033[0m\n''')
-    sleep(5)
+    input()
     # Limpar o terminal
     if clear == 1:
         os.system('cls' if os.name == 'nt' else 'clear')
