@@ -42,76 +42,73 @@ def processa_servidor():
 
     while True:
 
-        if encerramento:
-            break
+        try:
 
-        dados = sock.recv(TAM_MSG)
-        if not dados: break
-        msg_status = dados.decode().split('\n')[0]
+            if encerramento: break
 
-        sys.stdout.flush()
-        args = msg_status.split()
+            dados = sock.recv(TAM_MSG)
+            if not dados: break
+            msg_status = dados.decode().split('\n')[0]
 
-        if args[0] == '+ACK':
-            print(f'Conexão aceita pelo servidor, usuário {args[1]}\n')
+            sys.stdout.flush()
+            args = msg_status.split()
 
-        elif args[0] == '+CORRECT':
-            print('\033[1;36m O palpite estava correto!\033[1;0m\n')
+            if args[0] == '+ACK':
+                print(f'Conexão aceita pelo servidor, usuário {args[1]}\n')
 
-        elif args[0] == '+INCORRECT':
-            print('\033[1;31m O palpite estava incorreto...\033[1;0m\n')
+            elif args[0] == '+CORRECT':
+                print('\033[1;36m O palpite estava correto!\033[1;0m\n')
 
-        elif args[0] == '+WIN':
-            print(f'\n\033[1;33m Partida concluída! {args[1]} ganhou com {args[2]} pontos!\033[0m\n')
-            mutex.acquire()
-            encerramento = True
-            mutex.release()
-            break
+            elif args[0] == '+INCORRECT':
+                print('\033[1;31m O palpite estava incorreto...\033[1;0m\n')
 
-        elif args[0] == '+ANO':
-            print(f'O tema sorteado da vez é {args[1]}!\n')
+            elif args[0] == '+WIN':
+                print(f'\n\033[1;33m Partida concluída! {args[1]} ganhou com {args[2]} pontos!\033[0m\n')
+                mutex.acquire()
+                encerramento = True
+                mutex.release()
+                break
 
-        elif args[0] == '-END':
-            print('Partida cancelada por problemas de conexão.\n')
-            mutex.acquire()
-            encerramento = True
-            mutex.release()
-            break
+            elif args[0] == '+ANO':
+                print(f'O tema sorteado da vez é {args[1]}!\n')
 
-        elif args[0] == '-ERR_40':
-            print(f'Erro 40 - Usuário não participante da partida\n')
+            elif args[0] == '-END':
+                print('Partida cancelada por problemas de conexão.\n')
+                mutex.acquire()
+                encerramento = True
+                mutex.release()
+                break
 
-        elif args[0] == '-ERR_41':
-            print(f'Erro 41 - Endereço já está cadastrado da partida\n')
+            elif args[0] == '-ERR_40':
+                print(f'Erro 40 - Usuário não participante da partida\n')
 
-        elif args[0] == '-ERR_42':
-            print(f'Erro 42 - Partida em andamento\n')
+            elif args[0] == '-ERR_41':
+                print(f'Erro 41 - Endereço já está cadastrado da partida\n')
 
-        elif args[0] == '-ERR_43':
-            print(f'Erro 43 - Entrada inválida\n')
+            elif args[0] == '-ERR_42':
+                print(f'Erro 42 - Partida em andamento\n')
 
-        elif args[0] == '-ERR_44':
-            print(f'Erro 44 - Partida não iniciada\n')
+            elif args[0] == '-ERR_43':
+                print(f'Erro 43 - Entrada inválida\n')
 
-        else:
-            print(f'Erro desconhecido - {args[1]}\n')
+            elif args[0] == '-ERR_44':
+                print(f'Erro 44 - Partida não iniciada\n')
 
-
-print('Servidor:', HOST+':'+str(PORT))
+            else:
+                print(f'Erro desconhecido - {args[1]}\n')
+        except: break
 
 serv = (HOST, PORT)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(serv)
 
-loading(0.3, 2, 1)
+loading(0.3, 2, 1) #Exibir título do projeto
 
 print('Para encerrar use QUIT, CTRL+D ou CTRL+C\n')
 
 #Inicialização do Thread de processamento de respostas do servidor
 t = threading.Thread(target=processa_servidor, args=())
 t.start()
-
-
 
 while True:
 

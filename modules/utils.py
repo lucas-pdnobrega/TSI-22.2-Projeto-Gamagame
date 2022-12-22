@@ -1,10 +1,10 @@
 from time import sleep
-from os import system
+import os
 import sys
 # Função para exibir o loading e título do projeto
 def loading(t, vezes, clear):
     done = False
-    system('cls')
+    os.system('cls' if os.name == 'nt' else 'clear')
     print()
     while done == False:
         for repetir in range(vezes):
@@ -17,7 +17,7 @@ def loading(t, vezes, clear):
             sys.stdout.write('\rCarregando (. . .)')
             sleep(t)
         done = True
-    system('cls')
+    os.system('cls' if os.name == 'nt' else 'clear')
     sys.stdout.write(f'''\n\033[1;33m
     ─▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄
     █░░░█░░░░░░░░░░▄▄░██░█
@@ -33,6 +33,6 @@ def loading(t, vezes, clear):
        - Yago César
     \033[0m\n''')
     sleep(5)
-    # Limpar o terminal (Windows)
+    # Limpar o terminal
     if clear == 1:
-        system('cls')
+        os.system('cls' if os.name == 'nt' else 'clear')
