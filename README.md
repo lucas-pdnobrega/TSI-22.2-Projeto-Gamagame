@@ -40,4 +40,4 @@ palavra como pontuação. O peso é baseado na dificuldade da palavra.
   - -ERR_41 : Utilizado para notificar que o endereço do usuário já está cadastrado na partida.
   - -ERR_42 : Utilizado para notificar um usuário de que não é possível entrar por conta de uma partida em andamento.
   - -ERR_43 : Utilizado para notificar um usuário de que a entrada fornecida não é válida.
-  - -ERR_44 : Utilizado para informar os usuários que a partida não foi iniciada.
+  - -ERR_44 : Utilizado para informar os usuários que a partida não foi iniciada.# gamagame
